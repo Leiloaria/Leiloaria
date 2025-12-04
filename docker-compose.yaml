@@ -1,0 +1,45 @@
+services:
+  leiloaria:
+    build: .
+    container_name: leiloaria
+    working_dir: /app
+    command: mvn spring-boot:run
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: backend-db
+      DB_PORT: 5432
+      DB_NAME: leiloaria
+      DB_USER: postgres
+      DB_PASSWORD: password
+    depends_on:
+      - backend-db
+    networks:
+      - leiloaria_network
+    volumes:
+      - ./storage:/app/storage
+
+  backend-db:
+    image: postgres:16.0
+    container_name: backend-db
+    restart: always
+    environment:
+      POSTGRES_DB: leiloaria
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      TZ: America/Sao_Paulo
+    ports:
+      - "5442:5432"
+    networks:
+      - leiloaria_network
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+volumes:
+  pg-data:
+    driver: local
+
+networks:
+  leiloaria_network:
+    driver: bridge
