@@ -5,14 +5,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
 import br.com.leiloaria.model.Categoria;
 import br.com.leiloaria.model.QCategoria;
 
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, Long>, QuerydslPredicateExecutor<Categoria>,
-	PagingAndSortingRepository<Categoria, Long>,
 	QuerydslBinderCustomizer<QCategoria>{
 
 	@Override

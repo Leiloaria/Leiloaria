@@ -16,6 +16,7 @@ dependency-reduced-pom.xml
 *.zip
 *.tar.gz
 *.rar
+.factorypath
 
 # IDE - VSCode
 .vscode/
