@@ -26,4 +26,8 @@ public class Categoria {
 	@OneToMany
 	@JoinColumn(name = "categoria_id")
 	private List<Categoria> subcategorias;
+
+	public void addSubcategoria(Categoria subcategoria) {
+		this.subcategorias.add(subcategoria);
+	}
 }
