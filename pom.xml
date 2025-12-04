@@ -44,6 +44,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+			<version>${querydsl.version}</version>
+			<classifier>jakarta</classifier>
+		</dependency>
+
+		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
@@ -89,15 +96,69 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
+
+					<generatedSourcesDirectory>target/generated-sources/java</generatedSourcesDirectory>
+					<compilerArgs>
+						<arg>-Aquerydsl.entityAccessors=false</arg>
+						<arg>-Aquerydsl.useFields=false</arg>
+					</compilerArgs>
+
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
 							<version>1.18.42</version>
 						</path>
+
+						<path>
+							<groupId>com.querydsl</groupId>
+							<artifactId>querydsl-apt</artifactId>
+							<version>${querydsl.version}</version>
+							<classifier>jakarta</classifier>
+						</path>
+
+						<path>
+							<groupId>org.springframework.boot</groupId>
+							<artifactId>spring-boot-starter-data-jpa</artifactId>
+						</path>
 					</annotationProcessorPaths>
+					<generatedSourcesDirectory>${project.build.directory}/generated-sources/java</generatedSourcesDirectory>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.3.0</version>
+				<executions>
+					<execution>
+					<id>add-generated-sources</id>
+					<phase>generate-sources</phase>
+					<goals><goal>add-source</goal></goals>
+					<configuration>
+						<sources>
+						<source>${project.build.directory}/generated-sources/java</source>
+						</sources>
+					</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<systemPropertyVariables>
+						<spring.profiles.active>test</spring.profiles.active>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
 		</plugins>
 	</build>
 
