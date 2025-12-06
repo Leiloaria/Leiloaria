@@ -8,6 +8,7 @@ Trata-se do backend de um sistema de gerenciamento de uma Leiloaria de items em 
 
 Execução direta:
   mvn clean install
+  
   mvn spring-boot:run
 
 Execução via Docker:
