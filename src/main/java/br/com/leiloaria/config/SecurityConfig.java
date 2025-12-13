@@ -28,10 +28,8 @@ import com.nimbusds.jose.proc.SecurityContext;
 import br.com.leiloaria.repository.UsuarioRepository;
 
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
@@ -40,91 +38,86 @@ import java.util.Base64;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${jwt.public.key}")
-    private String publicKey;
+	@Value("${jwt.public.key}")
+	private String publicKey;
 
-    @Value("${jwt.private.key}")
-    private String privateKey;
+	@Value("${jwt.private.key}")
+	private String privateKey;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/auth/login", "/auth/register").permitAll()
-                .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwt -> jwt.decoder(jwtDecoder()))
-                );
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(auth -> auth
+						//.requestMatchers("/", "/auth/login", "/auth/register").permitAll()
+						.anyRequest().permitAll())
+						//.anyRequest().authenticated())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder())));
 
-        return http.build();
-    }
+		return http.build();
+	}
 
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(parsePublicKey()).build();
-    }
+	@Bean
+	public JwtDecoder jwtDecoder() {
+		return NimbusJwtDecoder.withPublicKey(parsePublicKey(publicKey)).build();
+	}
 
-    @Bean
-    public JwtEncoder jwtEncoder() {
-        JWK jwk = new RSAKey.Builder(parsePublicKey()).privateKey(parsePrivateKey()).build();
-        JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
-        return new NimbusJwtEncoder(jwkSource);
-    }
+	@Bean
+	public JwtEncoder jwtEncoder() {
+		JWK jwk = new RSAKey.Builder(parsePublicKey(publicKey)).privateKey(parsePrivateKey(privateKey)).build();
+		JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
+		return new NimbusJwtEncoder(jwkSource);
+	}
 
-    @Bean
-    public UserDetailsService userDetailsService(UsuarioRepository usuarioRepository) {
-        return username -> usuarioRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
-    }
+	@Bean
+	public UserDetailsService userDetailsService(UsuarioRepository usuarioRepository) {
+		return username -> usuarioRepository.findByEmail(username)
+				.orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder);
-        return new ProviderManager(authProvider);
-    }
+	@Bean
+	public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
+			PasswordEncoder passwordEncoder) {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+		authProvider.setPasswordEncoder(passwordEncoder);
+		return new ProviderManager(authProvider);
+	}
 
-    private java.security.interfaces.RSAPublicKey parsePublicKey() {
-        try {
-            String publicKeyPEM = publicKey
-                    .replace("-----BEGIN PUBLIC KEY-----", "")
-                    .replace("-----END PUBLIC KEY-----", "")
-                    .replaceAll("\\s+", "");
+	private RSAPublicKey parsePublicKey(String key) {
+		try {
 
-            byte[] decodedKey = Base64.getDecoder().decode(publicKeyPEM);
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(decodedKey);
-            KeyFactory factory = KeyFactory.getInstance("RSA");
-            return (RSAPublicKey) factory.generatePublic(spec);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new RuntimeException("Erro ao fazer parsing da chave pública", e);
-        }
-    }
+			String cleanedKey = key.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "")
+					.replaceAll("\\s+", "");
 
-    private java.security.interfaces.RSAPrivateKey parsePrivateKey() {
-        try {
-            String privateKeyPEM = privateKey
-                    .replace("-----BEGIN PRIVATE KEY-----", "")
-                    .replace("-----END PRIVATE KEY-----", "")
-                    .replaceAll("\\s+", "");
+			byte[] decoded = Base64.getDecoder().decode(cleanedKey);
 
-            byte[] decodedKey = Base64.getDecoder().decode(privateKeyPEM);
-            PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decodedKey);
-            KeyFactory factory = KeyFactory.getInstance("RSA");
-            return (RSAPrivateKey) factory.generatePrivate(spec);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new RuntimeException("Erro ao fazer parsing da chave privada", e);
-        }
-    }
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decoded);
+			return (RSAPublicKey) keyFactory.generatePublic(keySpec);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Erro ao processar chave PÚBLICA. Verifique o conteúdo da variável.", e);
+		}
+	}
+
+	private RSAPrivateKey parsePrivateKey(String key) {
+		try {
+			String cleanedKey = key.replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "")
+					.replaceAll("\\s+", "");
+
+			byte[] decoded = Base64.getDecoder().decode(cleanedKey);
+
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
+			return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Erro ao processar chave PRIVADA. Verifique o conteúdo da variável.", e);
+		}
+	}
 }
