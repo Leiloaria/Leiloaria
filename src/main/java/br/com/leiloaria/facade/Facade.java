@@ -2,6 +2,7 @@ package br.com.leiloaria.facade;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,10 +15,11 @@ import br.com.leiloaria.controller.dto.auth.LoginResponse;
 import br.com.leiloaria.controller.dto.auth.RegisterRequest;
 import br.com.leiloaria.controller.dto.auth.RegisterResponse;
 import br.com.leiloaria.controller.dto.user.UserRequest;
-import br.com.leiloaria.controller.dto.user.UserResponse;
 import br.com.leiloaria.model.Categoria;
+import br.com.leiloaria.model.Usuario;
 import br.com.leiloaria.service.interfaces.AuthServiceI;
 import br.com.leiloaria.service.interfaces.CategoriaServiceI;
+import br.com.leiloaria.service.interfaces.UsuarioServiceI;
 
 @Service
 public class Facade {
@@ -27,6 +29,12 @@ public class Facade {
 
     @Autowired
     private CategoriaServiceI categoriaService;
+    
+    @Autowired
+    private UsuarioServiceI userService;
+    
+    @Autowired
+    private ModelMapper modelMapper;
 
     // CATEGORIAS
     public Page<Categoria> listarCategorias(Predicate filtro, Pageable pageable) {
@@ -61,24 +69,29 @@ public class Facade {
     public RegisterResponse register(RegisterRequest registerRequest) {
         return authService.register(registerRequest);
     }
-
-	public UserResponse buscarUsuarioPorId(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+    
+    // USER
+    
+	public Usuario buscarUsuarioPorId(Long id) {
+		Usuario usuario = userService.buscarPorId(id);
+		return usuario;
 	}
 
-	public List<UserResponse> listarTodosUsuarios() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Page<Usuario> listarTodosUsuarios(Predicate predicate, Pageable pageable) {
+ 
+        return userService.listar(predicate, pageable);
+    }
 
-	public UserResponse atualizarUsuario(Long id, UserRequest userUpdateRequest) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Usuario atualizarUsuario(Long id, UserRequest userUpdateRequest) {
+    	Usuario usuario = userUpdateRequest.convertToEntity(userUpdateRequest, modelMapper);
+    	System.out.println(usuario.toString());
+    	Usuario usuarioAtualizado = userService.atualizar(id, usuario);
+       
+        return usuarioAtualizado;
+    }
 
-	public void deletarUsuario(Long id) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void deletarUsuario(Long id) {
+        userService.excluir(id);
+    }
+    
 }
