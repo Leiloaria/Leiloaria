@@ -20,9 +20,47 @@ spring:
 
 jwt:
   public:
-    key: ${JWT_PUBLIC_KEY}
+    key: |
+      -----BEGIN PUBLIC KEY-----
+      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkseYq7yuC1FpyVjVYUtQ
+      FqJEy2XeugrrKLGcPpAzwn6yu7Mam7CTa9YNm7In7+9Rp6gdViJh51WX1R4ijnex
+      cDi8U4hr6nGZSb0CFKuvqqzEskXQHX7sLw3KNGEI4qEL47NTXWAVEY+Ms/Cj3NRe
+      EoUbqj5kvteasSa2UmeBNnuWvo187PeFSR3W3ULeY1kU49HEE2HqSkrfCaNU207q
+      J8RcThnqaQ2O1y5tqtJ4m8ZjAeYJRm1MhdC1TZ8cfyT/XEJRiyaZgTYSn+s4iFbu
+      R5+FaBMjoj2jHhbgeIiM9ITpzcqDWAvDb2jdSg4tQElclpceMD0qceJUUiYms82B
+      pwIDAQAB
+      -----END PUBLIC KEY-----
   private:
-    key: ${JWT_PRIVATE_KEY}
+    key: |
+      -----BEGIN PRIVATE KEY-----
+      MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCSx5irvK4LUWnJ
+      WNVhS1AWokTLZd66CusosZw+kDPCfrK7sxqbsJNr1g2bsifv71GnqB1WImHnVZfV
+      HiKOd7FwOLxTiGvqcZlJvQIUq6+qrMSyRdAdfuwvDco0YQjioQvjs1NdYBURj4yz
+      8KPc1F4ShRuqPmS+15qxJrZSZ4E2e5a+jXzs94VJHdbdQt5jWRTj0cQTYepKSt8J
+      o1TbTuonxFxOGeppDY7XLm2q0nibxmMB5glGbUyF0LVNnxx/JP9cQlGLJpmBNhKf
+      6ziIVu5Hn4VoEyOiPaMeFuB4iIz0hOnNyoNYC8NvaN1KDi1ASVyWlx4wPSpx4lRS
+      JiazzYGnAgMBAAECggEACjKmlNKtykjZxLd7USCJFp7SO3TUc1tBg2OeVhUcGNic
+      qmst32tL6CNzG+zWLCwVzEQ4kDzLTeX7KpTGvzHpuMD4X1q3Gg7Sdku/fULVwvyb
+      SJeOd2jTbWF+jwJpj6AI0hp/du6vXWJP2vX5LI/vXpyzk1x1EMgCDhTWeLCK9bH9
+      k5Ex4K1xfTieIhnybOZz7v8MjIERR6tP0tcguYAo6g31XlfHvt1mmwRiv4m9uEyY
+      Y/s3LuOcPuj9u/du2yGyFIu5QMkj6bk5hhR5tPxtJhRviepBB8E1cOmDrnqsxa/W
+      KaTGSqMZRS11szU04IXTLzi0XodpbiIdUdrRWJbEIQKBgQDCiyF2DXhDYHc8fyt4
+      WyDvsH2AbZBRICuvt9IcHXsxL/COHf7RNe96akXYzYcOVK7u+vjbFnV9E0eNqw+m
+      cRDo6+tC0XXWNCQKPZ9MjNMZnBs3+Yhb/wSuLMYb5W4/+0jNxH/stbYLkCD1ko4M
+      6JMVzX2NxIcccE01ZbAkSucEJQKBgQDBJcXTpIoBXYzaFV9VdH323dpmOyFCUMUI
+      SueVz4ssD/Q42AjD0Uz/yXhWRjdBFUK+SIqmiQRz7OGmfoMojG+MwUYqIiE+YT8g
+      yUJDdSK1RPPoLIxp0gYQfCGoUFPqJsdAAq3rJqRcLSoOz2Z77PZPzBrJXG5RKVa1
+      AIseerw+2wKBgQCf2GFt9jNSaPiPpI27HmU5i/ISi/OANMawYoEoyLBoAdPNcafl
+      jkNuedNaB8VoaPwzL9M5cIKoeibYqCz7vPr/5pgvFpuTnNPf9jHlW/A3oqRaoZUA
+      wdC+q9s7IJAt0fJH36ScgdFKPupV3E0LHi18RJNc4JWDMGK/9QV9TG30YQKBgBV8
+      2UxZYs0SFkhw1kFQi276cYCsFWAmUjVA+BCvnUESqU3lotv+Hf3a8RtQBnekIN/A
+      fERYu/kVomj+bCMHtKVJH0AyudYRxY8lNM0CbBEUkboDsr9XETumQ6xQ+3TySXpy
+      kdy2WNS0ZZhuNG2XCDQKdfRu5wr6eV37qH6Ekwq/AoGBAIhs2e4Wcr086fjLkhp+
+      bgeatD5JCY8ONB/CL4T30ZxfSN+qnkbkibjTWEuf7O3+1Evs9MOJIYQ41VpDy4Vl
+      0y7VxInZSP0lFdxSRw/bh7GG6T93+U8h19/aYkIy66ETT0FpTO9jOPF4fF464FRl
+      khClmL8oPTP8keJglmqzYctG
+      -----END PRIVATE KEY-----
+
 
 ---
 
@@ -45,9 +83,48 @@ spring:
 
 jwt:
   public:
-    key: ${JWT_PUBLIC_KEY}
+    key: |
+      -----BEGIN PUBLIC KEY-----
+      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkseYq7yuC1FpyVjVYUtQ
+      FqJEy2XeugrrKLGcPpAzwn6yu7Mam7CTa9YNm7In7+9Rp6gdViJh51WX1R4ijnex
+      cDi8U4hr6nGZSb0CFKuvqqzEskXQHX7sLw3KNGEI4qEL47NTXWAVEY+Ms/Cj3NRe
+      EoUbqj5kvteasSa2UmeBNnuWvo187PeFSR3W3ULeY1kU49HEE2HqSkrfCaNU207q
+      J8RcThnqaQ2O1y5tqtJ4m8ZjAeYJRm1MhdC1TZ8cfyT/XEJRiyaZgTYSn+s4iFbu
+      R5+FaBMjoj2jHhbgeIiM9ITpzcqDWAvDb2jdSg4tQElclpceMD0qceJUUiYms82B
+      pwIDAQAB
+      -----END PUBLIC KEY-----
   private:
-    key: ${JWT_PRIVATE_KEY}
+    key: |
+      -----BEGIN PRIVATE KEY-----
+      MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCSx5irvK4LUWnJ
+      WNVhS1AWokTLZd66CusosZw+kDPCfrK7sxqbsJNr1g2bsifv71GnqB1WImHnVZfV
+      HiKOd7FwOLxTiGvqcZlJvQIUq6+qrMSyRdAdfuwvDco0YQjioQvjs1NdYBURj4yz
+      8KPc1F4ShRuqPmS+15qxJrZSZ4E2e5a+jXzs94VJHdbdQt5jWRTj0cQTYepKSt8J
+      o1TbTuonxFxOGeppDY7XLm2q0nibxmMB5glGbUyF0LVNnxx/JP9cQlGLJpmBNhKf
+      6ziIVu5Hn4VoEyOiPaMeFuB4iIz0hOnNyoNYC8NvaN1KDi1ASVyWlx4wPSpx4lRS
+      JiazzYGnAgMBAAECggEACjKmlNKtykjZxLd7USCJFp7SO3TUc1tBg2OeVhUcGNic
+      qmst32tL6CNzG+zWLCwVzEQ4kDzLTeX7KpTGvzHpuMD4X1q3Gg7Sdku/fULVwvyb
+      SJeOd2jTbWF+jwJpj6AI0hp/du6vXWJP2vX5LI/vXpyzk1x1EMgCDhTWeLCK9bH9
+      k5Ex4K1xfTieIhnybOZz7v8MjIERR6tP0tcguYAo6g31XlfHvt1mmwRiv4m9uEyY
+      Y/s3LuOcPuj9u/du2yGyFIu5QMkj6bk5hhR5tPxtJhRviepBB8E1cOmDrnqsxa/W
+      KaTGSqMZRS11szU04IXTLzi0XodpbiIdUdrRWJbEIQKBgQDCiyF2DXhDYHc8fyt4
+      WyDvsH2AbZBRICuvt9IcHXsxL/COHf7RNe96akXYzYcOVK7u+vjbFnV9E0eNqw+m
+      cRDo6+tC0XXWNCQKPZ9MjNMZnBs3+Yhb/wSuLMYb5W4/+0jNxH/stbYLkCD1ko4M
+      6JMVzX2NxIcccE01ZbAkSucEJQKBgQDBJcXTpIoBXYzaFV9VdH323dpmOyFCUMUI
+      SueVz4ssD/Q42AjD0Uz/yXhWRjdBFUK+SIqmiQRz7OGmfoMojG+MwUYqIiE+YT8g
+      yUJDdSK1RPPoLIxp0gYQfCGoUFPqJsdAAq3rJqRcLSoOz2Z77PZPzBrJXG5RKVa1
+      AIseerw+2wKBgQCf2GFt9jNSaPiPpI27HmU5i/ISi/OANMawYoEoyLBoAdPNcafl
+      jkNuedNaB8VoaPwzL9M5cIKoeibYqCz7vPr/5pgvFpuTnNPf9jHlW/A3oqRaoZUA
+      wdC+q9s7IJAt0fJH36ScgdFKPupV3E0LHi18RJNc4JWDMGK/9QV9TG30YQKBgBV8
+      2UxZYs0SFkhw1kFQi276cYCsFWAmUjVA+BCvnUESqU3lotv+Hf3a8RtQBnekIN/A
+      fERYu/kVomj+bCMHtKVJH0AyudYRxY8lNM0CbBEUkboDsr9XETumQ6xQ+3TySXpy
+      kdy2WNS0ZZhuNG2XCDQKdfRu5wr6eV37qH6Ekwq/AoGBAIhs2e4Wcr086fjLkhp+
+      bgeatD5JCY8ONB/CL4T30ZxfSN+qnkbkibjTWEuf7O3+1Evs9MOJIYQ41VpDy4Vl
+      0y7VxInZSP0lFdxSRw/bh7GG6T93+U8h19/aYkIy66ETT0FpTO9jOPF4fF464FRl
+      khClmL8oPTP8keJglmqzYctG
+      -----END PRIVATE KEY-----
+
+
 
 ---
 spring.config.activate.on-profile: test
@@ -74,6 +151,43 @@ spring:
 
 jwt:
   public:
-    key: ${JWT_PUBLIC_KEY}
+    key: |
+      -----BEGIN PUBLIC KEY-----
+      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkseYq7yuC1FpyVjVYUtQ
+      FqJEy2XeugrrKLGcPpAzwn6yu7Mam7CTa9YNm7In7+9Rp6gdViJh51WX1R4ijnex
+      cDi8U4hr6nGZSb0CFKuvqqzEskXQHX7sLw3KNGEI4qEL47NTXWAVEY+Ms/Cj3NRe
+      EoUbqj5kvteasSa2UmeBNnuWvo187PeFSR3W3ULeY1kU49HEE2HqSkrfCaNU207q
+      J8RcThnqaQ2O1y5tqtJ4m8ZjAeYJRm1MhdC1TZ8cfyT/XEJRiyaZgTYSn+s4iFbu
+      R5+FaBMjoj2jHhbgeIiM9ITpzcqDWAvDb2jdSg4tQElclpceMD0qceJUUiYms82B
+      pwIDAQAB
+      -----END PUBLIC KEY-----
   private:
-    key: ${JWT_PRIVATE_KEY}
+    key: |
+      -----BEGIN PRIVATE KEY-----
+      MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCSx5irvK4LUWnJ
+      WNVhS1AWokTLZd66CusosZw+kDPCfrK7sxqbsJNr1g2bsifv71GnqB1WImHnVZfV
+      HiKOd7FwOLxTiGvqcZlJvQIUq6+qrMSyRdAdfuwvDco0YQjioQvjs1NdYBURj4yz
+      8KPc1F4ShRuqPmS+15qxJrZSZ4E2e5a+jXzs94VJHdbdQt5jWRTj0cQTYepKSt8J
+      o1TbTuonxFxOGeppDY7XLm2q0nibxmMB5glGbUyF0LVNnxx/JP9cQlGLJpmBNhKf
+      6ziIVu5Hn4VoEyOiPaMeFuB4iIz0hOnNyoNYC8NvaN1KDi1ASVyWlx4wPSpx4lRS
+      JiazzYGnAgMBAAECggEACjKmlNKtykjZxLd7USCJFp7SO3TUc1tBg2OeVhUcGNic
+      qmst32tL6CNzG+zWLCwVzEQ4kDzLTeX7KpTGvzHpuMD4X1q3Gg7Sdku/fULVwvyb
+      SJeOd2jTbWF+jwJpj6AI0hp/du6vXWJP2vX5LI/vXpyzk1x1EMgCDhTWeLCK9bH9
+      k5Ex4K1xfTieIhnybOZz7v8MjIERR6tP0tcguYAo6g31XlfHvt1mmwRiv4m9uEyY
+      Y/s3LuOcPuj9u/du2yGyFIu5QMkj6bk5hhR5tPxtJhRviepBB8E1cOmDrnqsxa/W
+      KaTGSqMZRS11szU04IXTLzi0XodpbiIdUdrRWJbEIQKBgQDCiyF2DXhDYHc8fyt4
+      WyDvsH2AbZBRICuvt9IcHXsxL/COHf7RNe96akXYzYcOVK7u+vjbFnV9E0eNqw+m
+      cRDo6+tC0XXWNCQKPZ9MjNMZnBs3+Yhb/wSuLMYb5W4/+0jNxH/stbYLkCD1ko4M
+      6JMVzX2NxIcccE01ZbAkSucEJQKBgQDBJcXTpIoBXYzaFV9VdH323dpmOyFCUMUI
+      SueVz4ssD/Q42AjD0Uz/yXhWRjdBFUK+SIqmiQRz7OGmfoMojG+MwUYqIiE+YT8g
+      yUJDdSK1RPPoLIxp0gYQfCGoUFPqJsdAAq3rJqRcLSoOz2Z77PZPzBrJXG5RKVa1
+      AIseerw+2wKBgQCf2GFt9jNSaPiPpI27HmU5i/ISi/OANMawYoEoyLBoAdPNcafl
+      jkNuedNaB8VoaPwzL9M5cIKoeibYqCz7vPr/5pgvFpuTnNPf9jHlW/A3oqRaoZUA
+      wdC+q9s7IJAt0fJH36ScgdFKPupV3E0LHi18RJNc4JWDMGK/9QV9TG30YQKBgBV8
+      2UxZYs0SFkhw1kFQi276cYCsFWAmUjVA+BCvnUESqU3lotv+Hf3a8RtQBnekIN/A
+      fERYu/kVomj+bCMHtKVJH0AyudYRxY8lNM0CbBEUkboDsr9XETumQ6xQ+3TySXpy
+      kdy2WNS0ZZhuNG2XCDQKdfRu5wr6eV37qH6Ekwq/AoGBAIhs2e4Wcr086fjLkhp+
+      bgeatD5JCY8ONB/CL4T30ZxfSN+qnkbkibjTWEuf7O3+1Evs9MOJIYQ41VpDy4Vl
+      0y7VxInZSP0lFdxSRw/bh7GG6T93+U8h19/aYkIy66ETT0FpTO9jOPF4fF464FRl
+      khClmL8oPTP8keJglmqzYctG
+      -----END PRIVATE KEY-----
