@@ -24,7 +24,7 @@ public class LanceController {
     @Autowired
 	private Facade facade;
 
-	@PostMapping("/{id}")
+	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public LanceResponse criarCategoria(@RequestBody @Valid LanceRequest obj) {
 		Lance l = facade.criarLance(obj);
