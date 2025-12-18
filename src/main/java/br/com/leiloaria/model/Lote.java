@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +29,15 @@ public class Lote {
 	@Column(precision = 15, scale = 2)
 	private BigDecimal lanceMinimo;
 	
+	@ManyToOne
+	@JoinColumn(name = "leilao_id")
+	private Leilao leilao;
+	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "lote_id")
 	private List<Item> itens;
+	
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "lote_id")
+	private List<Lance> lances;
 }

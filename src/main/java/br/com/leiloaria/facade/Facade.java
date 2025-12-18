@@ -1,5 +1,6 @@
 package br.com.leiloaria.facade;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -15,11 +16,22 @@ import br.com.leiloaria.controller.dto.auth.LoginResponse;
 import br.com.leiloaria.controller.dto.auth.RegisterRequest;
 import br.com.leiloaria.controller.dto.auth.RegisterResponse;
 import br.com.leiloaria.controller.dto.user.UserRequest;
+import br.com.leiloaria.controller.lance.LanceRequest;
 import br.com.leiloaria.model.Categoria;
+import br.com.leiloaria.model.Lance;
+import br.com.leiloaria.model.Leilao;
+import br.com.leiloaria.model.Lote;
+import br.com.leiloaria.model.Pagamento;
 import br.com.leiloaria.model.Usuario;
+import br.com.leiloaria.model.Venda;
+import br.com.leiloaria.service.exceptions.AtualizarLanceInvalidoException;
+import br.com.leiloaria.service.exceptions.RecursoNaoEncontradoException;
 import br.com.leiloaria.service.interfaces.AuthServiceI;
 import br.com.leiloaria.service.interfaces.CategoriaServiceI;
+import br.com.leiloaria.service.interfaces.LanceServiceI;
+import br.com.leiloaria.service.interfaces.LoteServiceI;
 import br.com.leiloaria.service.interfaces.UsuarioServiceI;
+import br.com.leiloaria.service.interfaces.VendaServiceI;
 
 @Service
 public class Facade {
@@ -32,6 +44,12 @@ public class Facade {
     
     @Autowired
     private UsuarioServiceI userService;
+    
+    @Autowired
+    private LanceServiceI lanceService;
+    
+    @Autowired
+    private LoteServiceI loteService;
     
     @Autowired
     private ModelMapper modelMapper;
@@ -94,4 +112,81 @@ public class Facade {
         userService.excluir(id);
     }
     
+    //LANCE
+    
+    //list
+    public Page<Lance> listarLances(Predicate filtro, Pageable pageable) {
+        return lanceService.listar(filtro, pageable);
+    }
+    
+    //list by lote
+    public List<Lance> listarLancesPorLote(Long loteId){
+    	return lanceService.buscarLancesPorLoteId(loteId);
+    }
+
+    //findById
+    public Lance buscarLancePorId(Long id) {
+        return lanceService.buscarPorId(id);
+    }
+    
+    //create
+    public Lance criarLance(LanceRequest lanceRequest) {
+        Lote lanceLote = loteService.buscarLoteById(lanceRequest.getLoteId());
+        
+        Leilao leilaoLote = lanceLote.getLeilao();
+        
+        if(!leilaoLote.estaAberto()) {
+        	throw new AtualizarLanceInvalidoException("Leilão não está aberto");
+        }
+        
+        Lance maiorLance = lanceService.buscarMaiorLance(lanceLote.getId());
+        
+        if(maiorLance.getValor().compareTo(lanceRequest.getValor()) > 0) {
+        	throw new AtualizarLanceInvalidoException("Novo lance não é maior que o maior lance para esse leilão");
+        }
+        
+        Usuario usuarioLance = userService.buscarPorId(lanceRequest.getUsuarioId());
+        
+        Lance lance = new Lance();
+        lance.setLote(lanceLote);
+        lance.setUsuario(usuarioLance);
+    	
+    	return lanceService.cadastrar(lance);
+    }
+    
+    //update
+    public Lance atualizarValor(Long id, BigDecimal novoValor) {
+        Lance lance = lanceService.buscarPorId(id);
+        
+        Lote lanceLote = lance.getLote();
+        
+        Leilao leilaoLote = lanceLote.getLeilao();
+        
+        if(!leilaoLote.estaAberto()) {
+        	throw new AtualizarLanceInvalidoException("Leilão não está aberto");
+        }
+        
+        Lance maiorLote = lanceService.buscarMaiorLance(lanceLote.getId());
+        
+        if(maiorLote.getValor().compareTo(novoValor) > 0) {
+        	throw new AtualizarLanceInvalidoException("Novo lance não é maior que o maior lance para esse leilão");
+        }
+    	
+    	return lanceService.atualizarValor(id, novoValor);
+    }
+    
+    //remove
+    public void excluirLance(Long id) {
+        Lance lance = lanceService.buscarPorId(id);
+        
+        Lote lanceLote = lance.getLote();
+        
+        Leilao leilaoLote = lanceLote.getLeilao();
+        
+        if(!leilaoLote.estaAberto()) {
+        	throw new AtualizarLanceInvalidoException("Leilão não está aberto");
+        }
+        
+        lanceService.excluir(id);
+    }
 }
