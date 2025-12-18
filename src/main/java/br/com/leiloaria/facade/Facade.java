@@ -17,6 +17,7 @@ import br.com.leiloaria.controller.dto.auth.RegisterRequest;
 import br.com.leiloaria.controller.dto.auth.RegisterResponse;
 import br.com.leiloaria.controller.dto.user.UserRequest;
 import br.com.leiloaria.controller.lance.LanceRequest;
+import br.com.leiloaria.controller.venda.VendaRequest;
 import br.com.leiloaria.model.Categoria;
 import br.com.leiloaria.model.Lance;
 import br.com.leiloaria.model.Leilao;
@@ -24,12 +25,15 @@ import br.com.leiloaria.model.Lote;
 import br.com.leiloaria.model.Pagamento;
 import br.com.leiloaria.model.Usuario;
 import br.com.leiloaria.model.Venda;
+import br.com.leiloaria.model.enums.FormaPagamento;
+import br.com.leiloaria.model.enums.StatusPagamento;
 import br.com.leiloaria.service.exceptions.AtualizarLanceInvalidoException;
 import br.com.leiloaria.service.exceptions.RecursoNaoEncontradoException;
 import br.com.leiloaria.service.interfaces.AuthServiceI;
 import br.com.leiloaria.service.interfaces.CategoriaServiceI;
 import br.com.leiloaria.service.interfaces.LanceServiceI;
 import br.com.leiloaria.service.interfaces.LoteServiceI;
+import br.com.leiloaria.service.interfaces.PagamentoServiceI;
 import br.com.leiloaria.service.interfaces.UsuarioServiceI;
 import br.com.leiloaria.service.interfaces.VendaServiceI;
 
@@ -50,6 +54,12 @@ public class Facade {
     
     @Autowired
     private LoteServiceI loteService;
+    
+    @Autowired
+    private VendaServiceI vendaService;
+    
+    @Autowired
+    private PagamentoServiceI pagamentoService;
     
     @Autowired
     private ModelMapper modelMapper;
@@ -188,5 +198,32 @@ public class Facade {
         }
         
         lanceService.excluir(id);
+    }
+    
+    //VENDA
+    
+    
+    //create
+    public Venda gerarVenda(VendaRequest venda) {
+    	Lance lance = lanceService.buscarPorId(venda.getLanceId());
+    	
+    	Pagamento pagamento = pagamentoService.gerarFormaPagamento(venda);
+    	
+    	return vendaService.gerarVenda(lance, pagamento);
+    }
+    
+    //list
+    public Page<Venda> listarVenda(Predicate filtro, Pageable pageable) {
+        return vendaService.listar(filtro, pageable);
+    }
+
+    //findById
+    public Venda buscarVendaPorId(Long id) {
+        return vendaService.buscarPorId(id);
+    }
+    
+    //update
+    public Venda atualizarStatusPagamentoVenda(Long vendaId, StatusPagamento novoStatus) {
+    	return vendaService.atualizarStatusPagamentoVenda(vendaId, novoStatus);
     }
 }

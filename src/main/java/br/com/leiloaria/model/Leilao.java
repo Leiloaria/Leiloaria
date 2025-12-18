@@ -2,6 +2,7 @@ package br.com.leiloaria.model;
 
 import java.time.LocalDateTime;
 
+import br.com.leiloaria.model.enums.StatusLeilao;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,7 +21,7 @@ public class Leilao {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String status;
+	private StatusLeilao status;
 	private LocalDateTime inicio;
 	private LocalDateTime fim;
 	private LocalDateTime prazoPagamento;
@@ -29,4 +30,8 @@ public class Leilao {
 	@JoinColumn(name = "usuario_id")
 	private Usuario proprietario;
 	
+	
+	public boolean estaAberto() {
+		return status == StatusLeilao.ABERTO;
+	}
 }
