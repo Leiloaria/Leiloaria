@@ -1,4 +1,4 @@
-package br.com.leiloaria.controller.lance;
+package br.com.leiloaria.controller.dto.lance;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

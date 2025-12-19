@@ -1,4 +1,4 @@
-package br.com.leiloaria.controller.venda;
+package br.com.leiloaria.controller.dto.venda;
 
 import java.math.BigDecimal;
 
