@@ -1,8 +1,8 @@
-package br.com.leiloaria.controller.venda;
+package br.com.leiloaria.controller.dto.venda;
 
 import java.math.BigDecimal;
 
-import br.com.leiloaria.controller.lance.LanceRequest;
+import br.com.leiloaria.controller.dto.lance.LanceRequest;
 import br.com.leiloaria.model.enums.BandeiraCartao;
 import br.com.leiloaria.model.enums.FormaPagamento;
 import jakarta.validation.constraints.NotBlank;

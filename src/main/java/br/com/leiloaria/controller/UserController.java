@@ -25,6 +25,7 @@ import com.querydsl.core.types.Predicate;
 import br.com.leiloaria.controller.dto.user.UserRequest;
 import br.com.leiloaria.controller.dto.user.UserResponse;
 import br.com.leiloaria.facade.Facade;
+import br.com.leiloaria.model.Leilao;
 import br.com.leiloaria.model.Usuario;
 
 @RestController
@@ -54,6 +55,11 @@ public class UserController {
 
         return facade.listarTodosUsuarios(predicate, pageable).map(usuario -> new UserResponse(usuario, modelMapper));
 
+    }
+    
+    @GetMapping("/{id}/leiloes")
+    public List<Leilao> listarTodosLeiloes(@PathVariable("id") Long idLeilao) {
+        return facade.buscarLeiloesPorUsuario(idLeilao);
     }
     
     @PreAuthorize("hasAnyRole('ADMIN')") // TODO: o proprio user pode atualuizar seu perfil

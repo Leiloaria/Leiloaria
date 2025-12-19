@@ -1,6 +1,7 @@
 package br.com.leiloaria.facade;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -15,10 +16,14 @@ import br.com.leiloaria.controller.dto.auth.LoginRequest;
 import br.com.leiloaria.controller.dto.auth.LoginResponse;
 import br.com.leiloaria.controller.dto.auth.RegisterRequest;
 import br.com.leiloaria.controller.dto.auth.RegisterResponse;
+import br.com.leiloaria.controller.dto.items.ItemRequest;
+import br.com.leiloaria.controller.dto.lance.LanceRequest;
+import br.com.leiloaria.controller.dto.leilao.LeilaoRequest;
+import br.com.leiloaria.controller.dto.leilao.UpdateLeilaoRequest;
 import br.com.leiloaria.controller.dto.user.UserRequest;
-import br.com.leiloaria.controller.lance.LanceRequest;
-import br.com.leiloaria.controller.venda.VendaRequest;
+import br.com.leiloaria.controller.dto.venda.VendaRequest;
 import br.com.leiloaria.model.Categoria;
+import br.com.leiloaria.model.Item;
 import br.com.leiloaria.model.Lance;
 import br.com.leiloaria.model.Leilao;
 import br.com.leiloaria.model.Lote;
@@ -26,12 +31,15 @@ import br.com.leiloaria.model.Pagamento;
 import br.com.leiloaria.model.Usuario;
 import br.com.leiloaria.model.Venda;
 import br.com.leiloaria.model.enums.FormaPagamento;
+import br.com.leiloaria.model.enums.StatusLeilao;
 import br.com.leiloaria.model.enums.StatusPagamento;
+import br.com.leiloaria.service.UsuarioService;
 import br.com.leiloaria.service.exceptions.AtualizarLanceInvalidoException;
 import br.com.leiloaria.service.exceptions.RecursoNaoEncontradoException;
 import br.com.leiloaria.service.interfaces.AuthServiceI;
 import br.com.leiloaria.service.interfaces.CategoriaServiceI;
 import br.com.leiloaria.service.interfaces.LanceServiceI;
+import br.com.leiloaria.service.interfaces.LeilaoServiceI;
 import br.com.leiloaria.service.interfaces.LoteServiceI;
 import br.com.leiloaria.service.interfaces.PagamentoServiceI;
 import br.com.leiloaria.service.interfaces.UsuarioServiceI;
@@ -60,6 +68,9 @@ public class Facade {
     
     @Autowired
     private PagamentoServiceI pagamentoService;
+    
+    @Autowired
+    private LeilaoServiceI leilaoService;
     
     @Autowired
     private ModelMapper modelMapper;
@@ -225,5 +236,45 @@ public class Facade {
     //update
     public Venda atualizarStatusPagamentoVenda(Long vendaId, StatusPagamento novoStatus) {
     	return vendaService.atualizarStatusPagamentoVenda(vendaId, novoStatus);
+    }
+    
+    
+    //LEILAO
+    
+    //list
+    public Page<Leilao> listarLeiloes(Predicate filtro, Pageable pageable) {
+        return leilaoService.listar(filtro, pageable);
+    }
+    
+    //list
+    public List<Leilao> buscarLeiloesPorUsuario(Long usuarioId) {
+        return leilaoService.buscarLeiloesPorUsuario(usuarioId);
+    }
+    
+    //findById
+    public Leilao buscarLeilaoPorId(Long id) {
+        return leilaoService.buscarPorId(id);
+    }
+    
+    //create
+    public Leilao cadastrarLeilao(LeilaoRequest lReq, Long usuarioId) {
+    	Usuario usuario = userService.buscarPorId(usuarioId);
+    	
+    	return leilaoService.cadastrar(lReq, usuario);
+    }
+    
+    //update
+    public Leilao atualizarLeilao(Long leilaoId, UpdateLeilaoRequest lReq) {
+    	return leilaoService.atualizarLeilao(leilaoId, lReq);
+    }
+    
+    //update status
+    public void atualizarStatusLeilao(Long leilaoId, StatusLeilao novoStatus) {
+    	leilaoService.atualizarStatusLeilao(leilaoId, novoStatus);
+    }
+    
+    //delete
+    public void excluirLeilao(Long leilaoId) {
+    	leilaoService.excluir(leilaoId);
     }
 }

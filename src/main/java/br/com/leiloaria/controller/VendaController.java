@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.leiloaria.controller.venda.UpdateVendaRequest;
-import br.com.leiloaria.controller.venda.VendaRequest;
-import br.com.leiloaria.controller.venda.VendaResponse;
+import br.com.leiloaria.controller.dto.venda.UpdateVendaRequest;
+import br.com.leiloaria.controller.dto.venda.VendaRequest;
+import br.com.leiloaria.controller.dto.venda.VendaResponse;
 import br.com.leiloaria.facade.Facade;
 import br.com.leiloaria.model.Venda;
 import jakarta.validation.Valid;

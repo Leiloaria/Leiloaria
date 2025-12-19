@@ -1,4 +1,4 @@
-package br.com.leiloaria.controller.venda;
+package br.com.leiloaria.controller.dto.venda;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import br.com.leiloaria.controller.lance.LanceResponse;
+import br.com.leiloaria.controller.dto.lance.LanceResponse;
 import br.com.leiloaria.model.Lance;
 import br.com.leiloaria.model.Lote;
 import br.com.leiloaria.model.Pagamento;

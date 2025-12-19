@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.leiloaria.controller.lance.LanceRequest;
-import br.com.leiloaria.controller.lance.LanceResponse;
+import br.com.leiloaria.controller.dto.lance.LanceRequest;
+import br.com.leiloaria.controller.dto.lance.LanceResponse;
 import br.com.leiloaria.facade.Facade;
 import br.com.leiloaria.model.Lance;
 import jakarta.validation.Valid;
