@@ -26,9 +26,6 @@ public class AvaliacaoRequest {
   @Max(value = 5, message = "A nota máxima é 5")
   private Float stars; // nao existe avaliação sem nota
 
-  @NotNull(message = "O ID do lote é obrigatório")
-  private Long loteId;
-
   public Avaliacao convertToEntity(AvaliacaoRequest avaliacaoRequest, ModelMapper modelMapper) {
     return modelMapper.map(avaliacaoRequest, Avaliacao.class);
   }
