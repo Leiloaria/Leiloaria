@@ -18,9 +18,6 @@ import br.com.leiloaria.service.interfaces.UsuarioServiceI;
 public class UsuarioService implements UsuarioServiceI {
 
 	@Autowired
-	private ModelMapper modelMapper;
-
-	@Autowired
 	private UsuarioRepository usuarioRepository;
 
 	@Override
@@ -68,9 +65,6 @@ public class UsuarioService implements UsuarioServiceI {
                  throw new IllegalArgumentException("Email já cadastrado");
              }
         }
-
-        modelMapper.getConfiguration().setSkipNullEnabled(true);
-        modelMapper.map(obj, usuarioExistente);
 
         return usuarioRepository.save(usuarioExistente);
     }
