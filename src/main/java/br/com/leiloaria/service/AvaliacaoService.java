@@ -27,6 +27,7 @@ public class AvaliacaoService implements AvaliacaoServiceI {
     if (jaAvaliou(avaliacao.getUsuario().getId(), avaliacao.getLote().getId())) {
       throw new IllegalArgumentException("Usuário já avaliou este lote.");
     }
+    
 
     Avaliacao avaliacaoSalva = repository.save(avaliacao);
 

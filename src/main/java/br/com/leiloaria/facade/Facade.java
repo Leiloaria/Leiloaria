@@ -155,7 +155,7 @@ public class Facade {
     public Avaliacao atualizarAvaliacao(Long id, AvaliacaoRequest avaliacaoRequest) {
         Avaliacao avaliacaoExistente = avaliacaoService.buscarPorId(id);
 
-        if (authorizationService.isUsuarioAutorizadoParaAvaliacao(avaliacaoExistente)) {
+        if (!authorizationService.isUsuarioAutorizadoParaAvaliacao(avaliacaoExistente)) {
             throw new AccessDeniedException(
                     "Apenas o administrador ou o usuário que fez a avaliação pode atualizá-la.");
         }
@@ -166,8 +166,7 @@ public class Facade {
 
     public void deletarAvaliacao(Long id) {
         Avaliacao avaliacaoExistente = avaliacaoService.buscarPorId(id);
-
-        if (authorizationService.isUsuarioAutorizadoParaAvaliacao(avaliacaoExistente)) {
+        if (!authorizationService.isUsuarioAutorizadoParaAvaliacao(avaliacaoExistente)) {
             throw new AccessDeniedException(
                     "Apenas o administrador ou o usuário que fez a avaliação pode atualizá-la.");
         }
@@ -186,13 +185,19 @@ public class Facade {
     }
 
     public Avaliacao avaliarCompra(Long loteId, AvaliacaoRequest avaliacaoRequest) {
-
-        // Verificar se o lote existe
-        // Verificar se o usuario ja avaliou o lote(dentro do service já faz) - ok
-        // Verificar se o leilao já finalizou (pq ai ta aberto a avaliacao)
-        // verificar se o usuario da sessao é o mesmo que comprou.
         
-
+        // Verificar se o lote existe
+        Lote lote = loteService.buscarLoteById(loteId);
+        // Verificar se o leilao já finalizou (pq ai ta aberto a avaliacao)
+        if(lote.getLeilao().estaAberto()) {
+        	throw new RecursoNaoEncontradoException("Leilão ainda está aberto. Não é possível avaliar a compra.");
+        }
+        // Verificar se o usuario ja avaliou o lote(dentro do service já faz) - ok
+        // verificar se o usuario da sessao é o mesmo que comprou (maior lance da lista de lances).
+        if (!authorizationService.isUsuarioVencedorDoLote(loteId)) {
+            throw new AccessDeniedException("Apenas o usuário que comprou o lote pode avaliá-lo.");
+        }
+        
         Avaliacao avaliacao = avaliacaoRequest.convertToEntity(avaliacaoRequest, modelMapper);
 
         return avaliacaoService.avaliarCompra(avaliacao);
