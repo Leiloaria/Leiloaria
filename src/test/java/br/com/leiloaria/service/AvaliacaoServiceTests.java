@@ -125,7 +125,7 @@ public class AvaliacaoServiceTests {
 
     assertNotNull(result);
     assertEquals(1, result.getTotalElements());
-    verify(avaliacaoRepository, times(1)).findAllByLoteIdWithPredicate(eq(1L), eq(predicate), eq(pageable));
+    verify(avaliacaoRepository, times(2)).findAllByLoteIdWithPredicate(eq(1L), eq(predicate), eq(pageable));
   }
 
   @Test
@@ -139,11 +139,11 @@ public class AvaliacaoServiceTests {
 
     when(avaliacaoRepository.findAllByLoteIdWithPredicate(eq(1L), eq(predicate), eq(pageable))).thenReturn(pageVazia);
 
-    Page<Avaliacao> result = avaliacaoService.listarPorLote(1L, predicate, pageable);
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+      avaliacaoService.listarPorLote(1L, predicate, pageable);
+    });
 
-    assertNotNull(result);
-    assertEquals(0, result.getTotalElements());
-    assertTrue(result.getContent().isEmpty());
+    assertEquals("Nenhuma avaliação encontrada para o lote com ID: " + 1L, exception.getMessage());
     verify(avaliacaoRepository, times(1)).findAllByLoteIdWithPredicate(eq(1L), eq(predicate), eq(pageable));
   }
 
