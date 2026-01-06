@@ -40,6 +40,7 @@ import br.com.leiloaria.model.enums.StatusLeilao;
 import br.com.leiloaria.model.enums.StatusPagamento;
 import br.com.leiloaria.service.UsuarioService;
 import br.com.leiloaria.service.exceptions.AtualizarLanceInvalidoException;
+import br.com.leiloaria.service.exceptions.GerarVendaInvalidaException;
 import br.com.leiloaria.service.exceptions.RecursoNaoEncontradoException;
 import br.com.leiloaria.service.interfaces.AuthServiceI;
 import br.com.leiloaria.service.interfaces.AvaliacaoServiceI;
@@ -248,7 +249,7 @@ public class Facade {
     }
     
     //update
-    public Lance atualizarValor(Long id, BigDecimal novoValor) {
+    public Lance atualizarValorLance(Long id, BigDecimal novoValor) {
         Lance lance = lanceService.buscarPorId(id);
         
         Lote lanceLote = lance.getLote();

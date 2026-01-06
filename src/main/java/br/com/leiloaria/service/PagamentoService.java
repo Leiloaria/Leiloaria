@@ -52,6 +52,6 @@ public class PagamentoService implements PagamentoServiceI {
     			throw new FormaPagamentoInvalidaException("Forma de Pagamento não é aceita");
     	}
     	
-    	return repository.save(pagamento);
+    	return pagamento;
     }
 }

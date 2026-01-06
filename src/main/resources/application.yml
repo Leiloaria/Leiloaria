@@ -9,8 +9,9 @@ spring:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:leiloaria}?stringtype=unspecified&prepareThreshold=0
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:root}
-  sql.init.mode: never
+  sql.init.mode: always
   jpa:
+    defer-datasource-initialization: true
     hibernate:
       ddl-auto: create
       naming:

@@ -1,0 +1,2 @@
+INSERT INTO usuario(ativo, data_nascimento, endereco_id, cpf, email, nome, senha)
+	VALUES (TRUE,'18/01/1993', null, '111.111.111-11', 'teste@gmail.com', 'vendedor', '$2a$12$C5Sd1z3XwBE.nAbtFXtHFeZthHCYu6Dy5RwytwdV/OxGhe7d03RR6');

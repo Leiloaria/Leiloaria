@@ -26,15 +26,15 @@ public class LanceController {
 
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public LanceResponse criarCategoria(@RequestBody @Valid LanceRequest obj) {
+	public LanceResponse criarLance(@RequestBody @Valid LanceRequest obj) {
 		Lance l = facade.criarLance(obj);
 		return new LanceResponse(l);
 	}
 	
 	@PatchMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
-	public LanceResponse atualizarCategoria(@PathVariable("id") Long id, @RequestBody @Valid LanceRequest obj) {
-		Lance l = facade.atualizarValor(id, obj.getValor());
+	public LanceResponse atualizarLance(@PathVariable("id") Long id, @RequestBody @Valid LanceRequest obj) {
+		Lance l = facade.atualizarValorLance(id, obj.getValor());
 		return new LanceResponse(l);
 	}
 	
