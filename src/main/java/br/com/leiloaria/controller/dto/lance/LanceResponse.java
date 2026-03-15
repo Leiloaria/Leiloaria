@@ -34,8 +34,8 @@ public class LanceResponse {
         
         Venda venda = lance.getVenda();
         
-        if(venda!= null) {
-        	vendaId = vendaId;
+        if(venda != null) {
+        	this.vendaId = venda.getId();
         }
     }
 }
