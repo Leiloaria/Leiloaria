@@ -22,6 +22,7 @@ import com.querydsl.core.types.Predicate;
 
 import br.com.leiloaria.controller.dto.lance.LanceRequest;
 import br.com.leiloaria.controller.dto.lance.LanceResponse;
+import br.com.leiloaria.controller.dto.leilao.CancelarLeilaoRequest;
 import br.com.leiloaria.controller.dto.leilao.LeilaoRequest;
 import br.com.leiloaria.controller.dto.leilao.LeilaoResponse;
 import br.com.leiloaria.controller.dto.leilao.UpdateLeilaoRequest;
@@ -74,15 +75,8 @@ public class LeilaoController {
 		return new LeilaoResponse(l);
 	}
 	
-	@PatchMapping("/{id}/status")
-	@ResponseStatus(code = HttpStatus.OK)
-	public void atualizarCategoriaStatus(@PathVariable("id") Long idLeilao, @RequestBody @Valid UpdateLeilaoStatusRequest obj) {
-		facade.atualizarStatusLeilao(idLeilao, obj.getStatus());
+	@DeleteMapping("/{id}")
+	public void cancelarLeilao(@PathVariable("id") Long id, @RequestBody @Valid CancelarLeilaoRequest obj) {
+		facade.cancelarLeilao(obj.getUserId(), id);
 	}
-	
-    @DeleteMapping("/{id}")
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void excluirLeilao(@PathVariable("id") Long id) {
-        facade.excluirLeilao(id);
-    }
 }

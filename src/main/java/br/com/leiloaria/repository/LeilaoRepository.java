@@ -13,6 +13,7 @@ import br.com.leiloaria.model.enums.StatusLeilao;
 @Repository
 public interface LeilaoRepository extends JpaRepository<Leilao, Long>, QuerydslPredicateExecutor<Leilao> {
 	List<Leilao> findByProprietarioId(Long usuarioId);
+	List<Leilao> findByStatusAndInicioBefore(StatusLeilao status, LocalDateTime data);
 	List<Leilao> findByStatusAndFimBefore(StatusLeilao status, LocalDateTime data);
 	List<Leilao> findByStatusAndPrazoPagamentoBefore(StatusLeilao stauts, LocalDateTime data);
 }

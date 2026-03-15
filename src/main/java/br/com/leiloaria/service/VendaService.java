@@ -12,6 +12,7 @@ import br.com.leiloaria.model.Lance;
 import br.com.leiloaria.model.Pagamento;
 import br.com.leiloaria.model.Venda;
 import br.com.leiloaria.model.enums.StatusPagamento;
+import br.com.leiloaria.repository.LanceRepository;
 import br.com.leiloaria.repository.VendaRepository;
 import br.com.leiloaria.service.exceptions.RecursoNaoEncontradoException;
 import br.com.leiloaria.service.interfaces.VendaServiceI;
@@ -21,14 +22,20 @@ public class VendaService implements VendaServiceI {
 	
     @Autowired
     private VendaRepository repository;
+    
+    @Autowired
+    private LanceRepository lanceRepository;
 	
     @Override
-	public Venda gerarVenda(Lance lanceVencedor) {
+	public void gerarVenda(Lance lanceVencedor) {
     	Venda novaVenda = new Venda();
-    	novaVenda.setLance(lanceVencedor);
     	novaVenda.setValor(lanceVencedor.getValor());
     	
-    	return repository.save(novaVenda);
+    	novaVenda.setLance(lanceVencedor);
+    	lanceVencedor.setVenda(novaVenda);
+    	
+    	lanceRepository.save(lanceVencedor);
+//    	return repository.save(novaVenda);
     }
     
     @Override

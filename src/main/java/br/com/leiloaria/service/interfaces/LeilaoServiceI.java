@@ -18,6 +18,8 @@ public interface LeilaoServiceI {
 
 	Page<Leilao> listar(Predicate filtro, Pageable pageable);
 	
+	public List<Leilao> listarLeiloesParaAbrir();
+	
 	public List<Leilao> listarLeiloesParaFinalizar();
 
 	public List<Leilao> listarLeiloesParaCancelar();

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -44,6 +45,7 @@ import br.com.leiloaria.model.enums.StatusLeilao;
 import br.com.leiloaria.model.enums.StatusPagamento;
 import br.com.leiloaria.service.UsuarioService;
 import br.com.leiloaria.service.exceptions.AtualizarLanceInvalidoException;
+import br.com.leiloaria.service.exceptions.AtualizarLeilaoInvalidoException;
 import br.com.leiloaria.service.exceptions.AtualizarPagamentoVendaException;
 import br.com.leiloaria.service.exceptions.GerarVendaInvalidaException;
 import br.com.leiloaria.service.exceptions.RecursoNaoEncontradoException;
@@ -59,6 +61,8 @@ import br.com.leiloaria.service.interfaces.VendaServiceI;
 
 @Service
 public class Facade {
+
+    private final UsuarioService usuarioService;
 
     @Autowired
     private AuthServiceI authService;
@@ -92,21 +96,48 @@ public class Facade {
     
     @Autowired
     private ModelMapper modelMapper;
+    
+    @Value("${security.payment-gateway-token}")
+    private String paymentGatewayToken;
+
+
+    Facade(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
+
 
     // CATEGORIAS
     public Page<Categoria> listarCategorias(Predicate filtro, Pageable pageable) {
         return categoriaService.listar(filtro, pageable);
     }
 
-    public Categoria cadastrarCategoria(Categoria obj) {
+    public Categoria cadastrarCategoria(Long usuarioId, Categoria obj) {
+    	Usuario usuario = usuarioService.buscarPorId(usuarioId);
+    	
+    	if(!usuario.getEhAdmin()) {
+    		throw new AtualizarLeilaoInvalidoException("Categoria não pode ser cadastrada por esse usuário");
+    	}
+    	
         return categoriaService.cadastrar(obj);
     }
 
-    public Categoria atualizarCategoria(Long id, Categoria obj) {
+    public Categoria atualizarCategoria(Long usuarioId, Long id, Categoria obj) {
+    	Usuario usuario = usuarioService.buscarPorId(usuarioId);
+    	
+    	if(!usuario.getEhAdmin()) {
+    		throw new AtualizarLeilaoInvalidoException("Categoria não pode ser atualizada por esse usuário");
+    	}
+    	
         return categoriaService.atualizar(id, obj);
     }
 
-    public void excluirCategoria(Long id) {
+    public void excluirCategoria(Long usuarioId, Long id) {
+    	Usuario usuario = usuarioService.buscarPorId(usuarioId);
+    	
+    	if(!usuario.getEhAdmin()) {
+    		throw new AtualizarLeilaoInvalidoException("Categoria não pode ser excluída por esse usuário");
+    	}
+    	
         categoriaService.excluir(id);
     }
 
@@ -243,9 +274,9 @@ public class Facade {
         	throw new AtualizarLanceInvalidoException("Leilão não está aberto");
         }
         
-//        if(leilaoLote.getProprietario().getId() == lanceRequest.getUsuarioId()) {
-//        	throw new AtualizarLanceInvalidoException("Não é possível dar lance sendo o proprietário do leilão");
-//        }
+        if(leilaoLote.getProprietario().getId() == lanceRequest.getUsuarioId()) {
+        	throw new AtualizarLanceInvalidoException("Não é possível dar lance sendo o proprietário do leilão");
+        }
         
         if(lanceLote.getLanceMinimo().compareTo(lanceRequest.getValor()) >= 0) {
         	throw new AtualizarLanceInvalidoException("Novo lance não é maior que o lance mínimo desse leilão");
@@ -310,13 +341,6 @@ public class Facade {
     
     //VENDA
     
-    //create
-    public Venda gerarVenda(Long lanceId) {
-    	Lance lance = lanceService.buscarPorId(lanceId);
-    	
-    	return vendaService.gerarVenda(lance);
-    }
-    
     //list
     public Page<Venda> listarVenda(Predicate filtro, Pageable pageable) {
         return vendaService.listar(filtro, pageable);
@@ -341,7 +365,11 @@ public class Facade {
     }
     
     //update
-    public Venda atualizarStatusPagamentoVenda(Long vendaId, StatusPagamento novoStatus) {
+    public Venda atualizarStatusPagamentoVenda(String authorizationToken, Long vendaId, StatusPagamento novoStatus) {
+    	if(!authorizationToken.equals(paymentGatewayToken)) {
+    		throw new AtualizarPagamentoVendaException("Token de gateway de pagamento inválido");
+    	}
+    	
     	Venda venda = vendaService.buscarPorId(vendaId);
     	
     	Leilao leilaoVenda = venda.getLance().getLote().getLeilao();
@@ -368,6 +396,10 @@ public class Facade {
     }
     
     //list for scheduler
+    public List<Leilao> listarLeiloesParaAbrir(){
+    	return leilaoService.listarLeiloesParaAbrir();
+    }
+    
     public List<Leilao> listarLeiloesParaFinalizar(){
     	return leilaoService.listarLeiloesParaFinalizar();
     }
@@ -404,8 +436,15 @@ public class Facade {
     }
     
     //delete
-    public void excluirLeilao(Long leilaoId) {
-    	leilaoService.excluir(leilaoId);
+    public void cancelarLeilao(Long usuarioId, Long leilaoId) {
+    	Usuario usuario = usuarioService.buscarPorId(usuarioId);
+    	Leilao leilao = leilaoService.buscarPorId(leilaoId);
+    	
+    	if(usuario.getId() != leilao.getProprietario().getId() || !usuario.getEhAdmin()) {
+    		throw new AtualizarLeilaoInvalidoException("Leilão não pode ser cancelado por esse usuário");
+    	}
+    	
+    	leilaoService.atualizarStatusLeilao(leilaoId, StatusLeilao.CANCELADO);
     }
     
     public void encerrarLeilao(Long leilaoId) {

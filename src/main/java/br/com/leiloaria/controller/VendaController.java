@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,22 +34,15 @@ public class VendaController {
 		return new VendaResponse(v);
 	}
 	
-//	@PostMapping
-//	@ResponseStatus(code = HttpStatus.CREATED)
-//	public VendaResponse gerarVenda(@RequestBody @Valid CreateVendaRequest obj) {
-//		Venda v = facade.gerarVenda(obj);
-//		return new VendaResponse(v);
-//	}
-	
 	@PostMapping("/pagamento/{id}")
 	public VendaResponse atualizarPagamentoVenda(@PathVariable("id") Long vendaId,  @RequestBody @Valid UpdateVendaRequest obj) {
 		Venda v = facade.atualizarPagamentoVenda(vendaId, obj);
 		return new VendaResponse(v);
 	}
 	
-	@PutMapping("/pagamento/${id}")
-	public VendaResponse atualizarStatusPagamentoVenda(@PathVariable("id") Long vendaId,  @RequestBody @Valid UpdatePagamentoRequest obj) {
-		Venda v = facade.atualizarStatusPagamentoVenda(vendaId, obj.getStatusPagamento());
+	@PutMapping("/pagamento/{id}")
+	public VendaResponse atualizarStatusPagamentoVenda(@RequestHeader("Authorization") String authorizationHeader, @PathVariable("id") Long vendaId,  @RequestBody @Valid UpdatePagamentoRequest obj) {
+		Venda v = facade.atualizarStatusPagamentoVenda(authorizationHeader, vendaId, obj.getStatusPagamento());
 		return new VendaResponse(v);
 	}
 }

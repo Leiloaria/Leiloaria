@@ -57,6 +57,10 @@ public class LeilaoService implements LeilaoServiceI {
         return repository.findAll(filtro, pageable);
     }
     
+    public List<Leilao> listarLeiloesParaAbrir(){
+    	return repository.findByStatusAndInicioBefore(StatusLeilao.PENDENTE, LocalDateTime.now());
+    }
+    
     public List<Leilao> listarLeiloesParaFinalizar(){
     	return repository.findByStatusAndFimBefore(StatusLeilao.ABERTO, LocalDateTime.now());
     }

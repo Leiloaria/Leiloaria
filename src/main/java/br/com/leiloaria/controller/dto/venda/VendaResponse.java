@@ -25,7 +25,7 @@ public class VendaResponse {
 	private Long id;
 	private BigDecimal valor;
 	private Pagamento metodoPagamento;
-	private Lance lance;
+	private Long lanceId;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	
@@ -33,7 +33,7 @@ public class VendaResponse {
         this.id = v.getId();
         this.valor = v.getValor();
         this.metodoPagamento = v.getMetodoPagamento();
-        this.lance = v.getLance();
+        this.lanceId = v.getLance().getId();
         this.createdAt = v.getCreatedAt();
         this.updatedAt = v.getUpdatedAt();
     }
