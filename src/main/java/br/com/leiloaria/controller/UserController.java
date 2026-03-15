@@ -22,9 +22,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Pageable;
 import com.querydsl.core.types.Predicate;
 
+import br.com.leiloaria.controller.dto.lance.LanceResponse;
+import br.com.leiloaria.controller.dto.leilao.LeilaoResponse;
 import br.com.leiloaria.controller.dto.user.UserRequest;
 import br.com.leiloaria.controller.dto.user.UserResponse;
 import br.com.leiloaria.facade.Facade;
+import br.com.leiloaria.model.Lance;
 import br.com.leiloaria.model.Leilao;
 import br.com.leiloaria.model.Usuario;
 
@@ -58,8 +61,13 @@ public class UserController {
     }
     
     @GetMapping("/{id}/leiloes")
-    public List<Leilao> listarTodosLeiloes(@PathVariable("id") Long idLeilao) {
-        return facade.buscarLeiloesPorUsuario(idLeilao);
+    public List<LeilaoResponse> listarTodosLeiloes(@PathVariable("id") Long idUsuario) {
+        return facade.buscarLeiloesPorUsuario(idUsuario).stream().map(LeilaoResponse::new).toList();
+    }
+    
+    @GetMapping("/{id}/lances")
+    public List<LanceResponse> listarTodosLances(@PathVariable("id") Long idUsuario) {
+        return facade.buscarLancesPorUsuario(idUsuario).stream().map(LanceResponse::new).toList();
     }
     
     @PreAuthorize("hasAnyRole('ADMIN')") // TODO: o proprio user pode atualuizar seu perfil

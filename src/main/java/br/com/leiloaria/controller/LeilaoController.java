@@ -1,6 +1,12 @@
 package br.com.leiloaria.controller;
-
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,22 +18,41 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.querydsl.core.types.Predicate;
+
 import br.com.leiloaria.controller.dto.lance.LanceRequest;
 import br.com.leiloaria.controller.dto.lance.LanceResponse;
 import br.com.leiloaria.controller.dto.leilao.LeilaoRequest;
 import br.com.leiloaria.controller.dto.leilao.LeilaoResponse;
 import br.com.leiloaria.controller.dto.leilao.UpdateLeilaoRequest;
 import br.com.leiloaria.controller.dto.leilao.UpdateLeilaoStatusRequest;
+import br.com.leiloaria.controller.dto.user.UserResponse;
 import br.com.leiloaria.facade.Facade;
 import br.com.leiloaria.model.Lance;
 import br.com.leiloaria.model.Leilao;
+import br.com.leiloaria.model.Usuario;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/leiloes")
 public class LeilaoController {
+
+    private final ModelMapper modelMapper;
     @Autowired
 	private Facade facade;
+
+    LeilaoController(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
+    
+    //ex: /leiloes?status=ATIVO&page=0&size=5
+    @GetMapping("")
+    public Page<LeilaoResponse> listarLeiloes( @QuerydslPredicate(root = Leilao.class) Predicate predicate,
+            @PageableDefault(value = 10)
+            @SortDefault(sort = "id", direction = Sort.Direction.ASC)
+            Pageable pageable) {
+    	return facade.listarLeiloes(predicate, pageable).map(leilao -> new LeilaoResponse(leilao));
+    }
     
 	@GetMapping("/{id}")
 	public LeilaoResponse buscarPorId(@PathVariable("id") Long id) {

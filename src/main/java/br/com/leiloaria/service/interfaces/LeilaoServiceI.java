@@ -17,6 +17,10 @@ import br.com.leiloaria.model.enums.StatusLeilao;
 public interface LeilaoServiceI {
 
 	Page<Leilao> listar(Predicate filtro, Pageable pageable);
+	
+	public List<Leilao> listarLeiloesParaFinalizar();
+
+	public List<Leilao> listarLeiloesParaCancelar();
 
 	Leilao buscarPorId(Long id);
 	

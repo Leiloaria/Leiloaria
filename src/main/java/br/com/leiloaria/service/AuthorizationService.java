@@ -49,6 +49,11 @@ public class AuthorizationService {
     if (isAdmin) return true;
 
     Lance maiorLance = lanceService.buscarMaiorLance(loteId);
+    
+    if(maiorLance == null) {
+    	return false;
+    }
+    
     return maiorLance.getUsuario().getId().equals(currentUserId);
   }
 

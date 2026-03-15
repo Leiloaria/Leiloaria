@@ -1,6 +1,7 @@
 package br.com.leiloaria.facade;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,8 @@ import br.com.leiloaria.controller.dto.lance.LanceRequest;
 import br.com.leiloaria.controller.dto.leilao.LeilaoRequest;
 import br.com.leiloaria.controller.dto.leilao.UpdateLeilaoRequest;
 import br.com.leiloaria.controller.dto.user.UserRequest;
-import br.com.leiloaria.controller.dto.venda.VendaRequest;
+import br.com.leiloaria.controller.dto.venda.CreateVendaRequest;
+import br.com.leiloaria.controller.dto.venda.UpdateVendaRequest;
 import br.com.leiloaria.model.Categoria;
 import br.com.leiloaria.model.Item;
 import br.com.leiloaria.model.Lance;
@@ -34,12 +36,15 @@ import br.com.leiloaria.model.Lote;
 import br.com.leiloaria.model.Pagamento;
 import br.com.leiloaria.model.Usuario;
 import br.com.leiloaria.service.AuthorizationService;
+import br.com.leiloaria.service.LanceService;
+import br.com.leiloaria.service.LeilaoService;
 import br.com.leiloaria.model.Venda;
 import br.com.leiloaria.model.enums.FormaPagamento;
 import br.com.leiloaria.model.enums.StatusLeilao;
 import br.com.leiloaria.model.enums.StatusPagamento;
 import br.com.leiloaria.service.UsuarioService;
 import br.com.leiloaria.service.exceptions.AtualizarLanceInvalidoException;
+import br.com.leiloaria.service.exceptions.AtualizarPagamentoVendaException;
 import br.com.leiloaria.service.exceptions.GerarVendaInvalidaException;
 import br.com.leiloaria.service.exceptions.RecursoNaoEncontradoException;
 import br.com.leiloaria.service.interfaces.AuthServiceI;
@@ -223,6 +228,11 @@ public class Facade {
         return lanceService.buscarPorId(id);
     }
     
+    //list by user
+    public List<Lance> buscarLancesPorUsuario(Long usuarioId) {
+        return lanceService.buscarLancesPorUsuario(usuarioId);
+    }
+    
     //create
     public Lance criarLance(LanceRequest lanceRequest) {
         Lote lanceLote = loteService.buscarLoteById(lanceRequest.getLoteId());
@@ -233,9 +243,17 @@ public class Facade {
         	throw new AtualizarLanceInvalidoException("Leilão não está aberto");
         }
         
+//        if(leilaoLote.getProprietario().getId() == lanceRequest.getUsuarioId()) {
+//        	throw new AtualizarLanceInvalidoException("Não é possível dar lance sendo o proprietário do leilão");
+//        }
+        
+        if(lanceLote.getLanceMinimo().compareTo(lanceRequest.getValor()) >= 0) {
+        	throw new AtualizarLanceInvalidoException("Novo lance não é maior que o lance mínimo desse leilão");
+        }
+        
         Lance maiorLance = lanceService.buscarMaiorLance(lanceLote.getId());
         
-        if(maiorLance.getValor().compareTo(lanceRequest.getValor()) > 0) {
+        if(maiorLance != null && maiorLance.getValor().compareTo(lanceRequest.getValor()) >= 0) {
         	throw new AtualizarLanceInvalidoException("Novo lance não é maior que o maior lance para esse leilão");
         }
         
@@ -244,6 +262,8 @@ public class Facade {
         Lance lance = new Lance();
         lance.setLote(lanceLote);
         lance.setUsuario(usuarioLance);
+        lance.setValor(lanceRequest.getValor());
+        lance.setTimestamp(LocalDateTime.now());
     	
     	return lanceService.cadastrar(lance);
     }
@@ -260,9 +280,13 @@ public class Facade {
         	throw new AtualizarLanceInvalidoException("Leilão não está aberto");
         }
         
-        Lance maiorLote = lanceService.buscarMaiorLance(lanceLote.getId());
+        Lance maiorLanceLote = lanceService.buscarMaiorLance(lanceLote.getId());
         
-        if(maiorLote.getValor().compareTo(novoValor) > 0) {
+        if(maiorLanceLote == null) {
+        	throw new RecursoNaoEncontradoException("Maior Lance não encontrado");
+        }
+        
+        if(maiorLanceLote.getValor().compareTo(novoValor) >= 0) {
         	throw new AtualizarLanceInvalidoException("Novo lance não é maior que o maior lance para esse leilão");
         }
     	
@@ -286,14 +310,11 @@ public class Facade {
     
     //VENDA
     
-    
     //create
-    public Venda gerarVenda(VendaRequest venda) {
-    	Lance lance = lanceService.buscarPorId(venda.getLanceId());
+    public Venda gerarVenda(Long lanceId) {
+    	Lance lance = lanceService.buscarPorId(lanceId);
     	
-    	Pagamento pagamento = pagamentoService.gerarFormaPagamento(venda);
-    	
-    	return vendaService.gerarVenda(lance, pagamento);
+    	return vendaService.gerarVenda(lance);
     }
     
     //list
@@ -307,8 +328,35 @@ public class Facade {
     }
     
     //update
+    public Venda atualizarPagamentoVenda(Long vendaId, UpdateVendaRequest vendaPagamento) {
+    	Venda venda = vendaService.buscarPorId(vendaId);
+    	
+    	if(venda.getLance().getLote().getLeilao().getStatus() == StatusLeilao.CANCELADO) {
+    		throw new AtualizarPagamentoVendaException("Leilão foi cancelado por ter passado do prazo de pagamento");
+    	}
+    	
+    	Pagamento pagamento = pagamentoService.gerarFormaPagamento(vendaPagamento);
+    	
+    	return vendaService.adicionarPagamentoVenda(venda, pagamento);
+    }
+    
+    //update
     public Venda atualizarStatusPagamentoVenda(Long vendaId, StatusPagamento novoStatus) {
-    	return vendaService.atualizarStatusPagamentoVenda(vendaId, novoStatus);
+    	Venda venda = vendaService.buscarPorId(vendaId);
+    	
+    	Leilao leilaoVenda = venda.getLance().getLote().getLeilao();
+    	
+    	if(leilaoVenda.getStatus() == StatusLeilao.CANCELADO) {
+    		throw new AtualizarPagamentoVendaException("Leilão foi cancelado por ter passado do prazo de pagamento");
+    	}
+    	
+    	Venda vendaFinalizada = vendaService.atualizarStatusPagamentoVenda(vendaId, novoStatus);
+    	
+    	if(novoStatus == StatusPagamento.PAID) {
+    		leilaoService.atualizarStatusLeilao(leilaoVenda.getId(), StatusLeilao.FINALIZADO);
+    	}
+    	
+    	return vendaFinalizada;
     }
     
     
@@ -317,6 +365,15 @@ public class Facade {
     //list
     public Page<Leilao> listarLeiloes(Predicate filtro, Pageable pageable) {
         return leilaoService.listar(filtro, pageable);
+    }
+    
+    //list for scheduler
+    public List<Leilao> listarLeiloesParaFinalizar(){
+    	return leilaoService.listarLeiloesParaFinalizar();
+    }
+    
+    public List<Leilao> listarLeiloesParaCancelar(){
+    	return leilaoService.listarLeiloesParaCancelar();
     }
     
     //list
@@ -349,5 +406,20 @@ public class Facade {
     //delete
     public void excluirLeilao(Long leilaoId) {
     	leilaoService.excluir(leilaoId);
+    }
+    
+    public void encerrarLeilao(Long leilaoId) {
+    	Leilao leilao = leilaoService.buscarPorId(leilaoId);
+    	
+    	leilaoService.atualizarStatusLeilao(leilaoId, StatusLeilao.AGUARDANDO_PAGAMENTO);
+    	
+    	Lance maiorLance = lanceService.buscarMaiorLance(leilao.getLote().getId());
+    	
+    	if(maiorLance == null) {
+    		leilaoService.atualizarStatusLeilao(leilaoId, StatusLeilao.CANCELADO);
+    		return;
+    	}
+    	
+    	vendaService.gerarVenda(maiorLance);
     }
 }

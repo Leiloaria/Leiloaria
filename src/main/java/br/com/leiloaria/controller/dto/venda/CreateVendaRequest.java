@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VendaRequest {
+public class CreateVendaRequest {
     @NotBlank
     @Positive
     private BigDecimal valor;

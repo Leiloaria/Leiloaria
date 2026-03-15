@@ -23,13 +23,19 @@ public class VendaService implements VendaServiceI {
     private VendaRepository repository;
 	
     @Override
-	public Venda gerarVenda(Lance lanceVencedor, Pagamento pagamento) {
+	public Venda gerarVenda(Lance lanceVencedor) {
     	Venda novaVenda = new Venda();
     	novaVenda.setLance(lanceVencedor);
     	novaVenda.setValor(lanceVencedor.getValor());
-    	novaVenda.setMetodoPagamento(pagamento);
     	
     	return repository.save(novaVenda);
+    }
+    
+    @Override
+	public Venda adicionarPagamentoVenda(Venda venda, Pagamento pagamento) {
+    	venda.setMetodoPagamento(pagamento);
+    	
+    	return repository.save(venda);
     }
     
     @Override

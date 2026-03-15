@@ -13,8 +13,10 @@ import com.querydsl.core.types.Predicate;
 
 import br.com.leiloaria.model.Categoria;
 import br.com.leiloaria.model.Lance;
+import br.com.leiloaria.model.Leilao;
 import br.com.leiloaria.model.Lote;
 import br.com.leiloaria.repository.LanceRepository;
+import br.com.leiloaria.repository.UsuarioRepository;
 import br.com.leiloaria.service.exceptions.AtualizarLanceInvalidoException;
 import br.com.leiloaria.service.exceptions.RecursoNaoEncontradoException;
 import br.com.leiloaria.service.interfaces.LanceServiceI;
@@ -24,6 +26,9 @@ public class LanceService implements LanceServiceI {
 	
     @Autowired
     private LanceRepository repository;
+    
+    @Autowired
+    private UsuarioRepository usuarioRepo;
     
     @Override
     @Transactional(readOnly = true)
@@ -38,6 +43,18 @@ public class LanceService implements LanceServiceI {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Lance não encontrado"));
             return lance;
 	}
+    
+    @Override
+    @Transactional(readOnly = true)
+	public List<Lance> buscarLancesPorUsuario(Long usuarioId) {
+        usuarioRepo.findById(usuarioId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuario não encontrado"));
+        
+        List<Lance> lances = repository.findByUsuarioId(usuarioId);
+        
+        return lances;
+	}
+    
     
     @Override
     public Lance cadastrar(Lance obj) {
@@ -67,7 +84,7 @@ public class LanceService implements LanceServiceI {
     @Transactional(readOnly = true)
 	public Lance buscarMaiorLance(Long loteId) {              
         Lance lance = repository.findTopByLoteIdOrderByValorDesc(loteId)
-        	.orElseThrow(() -> new RecursoNaoEncontradoException("Lance não encontrado"));
+        	.orElse(null);
         
         return lance;
 	}

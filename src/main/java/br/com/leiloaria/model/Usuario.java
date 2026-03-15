@@ -46,6 +46,9 @@ public class Usuario implements UserDetails {
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Leilao> leiloes;
+    
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Lance> lances;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

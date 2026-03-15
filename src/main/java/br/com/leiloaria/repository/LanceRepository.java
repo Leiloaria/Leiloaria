@@ -8,10 +8,12 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
 import br.com.leiloaria.model.Lance;
+import br.com.leiloaria.model.Leilao;
 
 @Repository
 public interface LanceRepository extends JpaRepository<Lance, Long>, QuerydslPredicateExecutor<Lance>{
 	Optional<Lance> findTopByLoteIdOrderByValorDesc(Long loteId);
 	List<Lance> findByLoteId(Long loteId);
+	List<Lance> findByUsuarioId(Long usuarioId);
 }
 

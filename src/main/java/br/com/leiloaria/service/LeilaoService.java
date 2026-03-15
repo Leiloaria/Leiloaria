@@ -1,6 +1,7 @@
 package br.com.leiloaria.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,14 @@ public class LeilaoService implements LeilaoServiceI {
     @Transactional(readOnly = true)
     public Page<Leilao> listar(Predicate filtro, Pageable pageable) {
         return repository.findAll(filtro, pageable);
+    }
+    
+    public List<Leilao> listarLeiloesParaFinalizar(){
+    	return repository.findByStatusAndFimBefore(StatusLeilao.ABERTO, LocalDateTime.now());
+    }
+    
+    public List<Leilao> listarLeiloesParaCancelar(){
+    	return repository.findByStatusAndPrazoPagamentoBefore(StatusLeilao.AGUARDANDO_PAGAMENTO, LocalDateTime.now());
     }
 	
     @Override
@@ -200,11 +209,11 @@ public class LeilaoService implements LeilaoServiceI {
         	throw new AtualizarLeilaoInvalidoException("Leilão está aberto e não pode ser marcado como pendente mais");
         }
         
-        if(leilao.getStatus() == StatusLeilao.PENDENTE && novoStatus == StatusLeilao.FINALIZADO ) {
+        if(leilao.getStatus() == StatusLeilao.PENDENTE && (novoStatus == StatusLeilao.FINALIZADO || novoStatus == StatusLeilao.AGUARDANDO_PAGAMENTO) ) {
         	throw new AtualizarLeilaoInvalidoException("Leilão está pendente e deve ser aberto antes de ser finalizado");
         }
         
-        if((leilao.getStatus() == StatusLeilao.FINALIZADO || leilao.getStatus() == StatusLeilao.CANCELADO) && novoStatus != null ) {
+        if(leilao.getStatus() == StatusLeilao.FINALIZADO || leilao.getStatus() == StatusLeilao.CANCELADO) {
         	throw new AtualizarLeilaoInvalidoException("Leilão está finalizado e não pode ser atualizado mais");
         }
         

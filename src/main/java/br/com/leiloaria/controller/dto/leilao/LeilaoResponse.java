@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import br.com.leiloaria.controller.dto.categoria.CategoriaResponse;
+import br.com.leiloaria.controller.dto.lote.LoteResponse;
 import br.com.leiloaria.model.Leilao;
 import br.com.leiloaria.model.Lote;
 import br.com.leiloaria.model.enums.StatusLeilao;
@@ -21,7 +22,7 @@ public class LeilaoResponse {
 	private LocalDateTime fim;
 	private LocalDateTime prazoPagamento;
 	
-	private Lote lote;
+	private LoteResponse lote;
 	
     public LeilaoResponse(Leilao l) {
         this.id = l.getId();
@@ -29,6 +30,6 @@ public class LeilaoResponse {
         this.inicio = l.getInicio();
         this.fim = l.getFim();
         this.prazoPagamento = l.getPrazoPagamento();
-        this.lote = l.getLote();
+        this.lote = new LoteResponse(l.getLote());
     }
 }

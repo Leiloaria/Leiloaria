@@ -8,6 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -20,14 +22,14 @@ import lombok.NoArgsConstructor;
 @Data
 public class Venda {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	private BigDecimal valor;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	private Pagamento metodoPagamento;
 	
-	@OneToOne
+	@OneToOne(mappedBy = "venda")
 	private Lance lance;
 	
 	@CreationTimestamp
