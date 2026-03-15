@@ -62,7 +62,8 @@ jwt:
       khClmL8oPTP8keJglmqzYctG
       -----END PRIVATE KEY-----
 
-
+security:
+  payment-gateway-token: 66e60f50-d3ff-474b-8507-831345f40ad5
 ---
 
 spring.config.activate.on-profile: docker
@@ -125,7 +126,8 @@ jwt:
       khClmL8oPTP8keJglmqzYctG
       -----END PRIVATE KEY-----
 
-
+security:
+  payment-gateway-token: 66e60f50-d3ff-474b-8507-831345f40ad5
 
 ---
 spring.config.activate.on-profile: test
@@ -192,3 +194,6 @@ jwt:
       0y7VxInZSP0lFdxSRw/bh7GG6T93+U8h19/aYkIy66ETT0FpTO9jOPF4fF464FRl
       khClmL8oPTP8keJglmqzYctG
       -----END PRIVATE KEY-----
+
+security:
+  payment-gateway-token: 66e60f50-d3ff-474b-8507-831345f40ad5
