@@ -1,6 +1,5 @@
 package br.com.leiloaria.service;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -82,5 +81,15 @@ public class UsuarioService implements UsuarioServiceI {
 	public Usuario buscarPorId(Long id) {
 
 		return usuarioRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+	}
+
+	@Override
+	public Usuario buscarPorEmail(String email) {
+		if (email == null || email.trim().isEmpty()) {
+			throw new IllegalArgumentException("Email é obrigatório");
+		}
+
+		return usuarioRepository.findByEmail(email)
+				.orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com este e-mail."));
 	}
 }

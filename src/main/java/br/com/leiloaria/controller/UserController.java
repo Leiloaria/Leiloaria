@@ -11,6 +11,8 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,8 +29,6 @@ import br.com.leiloaria.controller.dto.leilao.LeilaoResponse;
 import br.com.leiloaria.controller.dto.user.UserRequest;
 import br.com.leiloaria.controller.dto.user.UserResponse;
 import br.com.leiloaria.facade.Facade;
-import br.com.leiloaria.model.Lance;
-import br.com.leiloaria.model.Leilao;
 import br.com.leiloaria.model.Usuario;
 
 @RestController
@@ -40,6 +40,17 @@ public class UserController {
     
     @Autowired
     private ModelMapper modelMapper;
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
+        if (jwt == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String email = jwt.getSubject();
+        Usuario usuario = facade.buscarUsuarioPorEmail(email);
+        return new ResponseEntity<>(new UserResponse(usuario, modelMapper), HttpStatus.OK);
+    }
     
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/{id}")

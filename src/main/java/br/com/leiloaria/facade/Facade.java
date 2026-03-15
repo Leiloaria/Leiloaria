@@ -2,7 +2,6 @@ package br.com.leiloaria.facade;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -22,32 +21,24 @@ import br.com.leiloaria.controller.dto.auth.RegisterResponse;
 import br.com.leiloaria.controller.dto.avaliacao.AvaliacaoRequest;
 import br.com.leiloaria.controller.dto.user.UserRequest;
 import br.com.leiloaria.model.Avaliacao;
-import br.com.leiloaria.controller.dto.items.ItemRequest;
 import br.com.leiloaria.controller.dto.lance.LanceRequest;
 import br.com.leiloaria.controller.dto.leilao.LeilaoRequest;
 import br.com.leiloaria.controller.dto.leilao.UpdateLeilaoRequest;
-import br.com.leiloaria.controller.dto.user.UserRequest;
-import br.com.leiloaria.controller.dto.venda.CreateVendaRequest;
 import br.com.leiloaria.controller.dto.venda.UpdateVendaRequest;
 import br.com.leiloaria.model.Categoria;
-import br.com.leiloaria.model.Item;
 import br.com.leiloaria.model.Lance;
 import br.com.leiloaria.model.Leilao;
 import br.com.leiloaria.model.Lote;
 import br.com.leiloaria.model.Pagamento;
 import br.com.leiloaria.model.Usuario;
 import br.com.leiloaria.service.AuthorizationService;
-import br.com.leiloaria.service.LanceService;
-import br.com.leiloaria.service.LeilaoService;
 import br.com.leiloaria.model.Venda;
-import br.com.leiloaria.model.enums.FormaPagamento;
 import br.com.leiloaria.model.enums.StatusLeilao;
 import br.com.leiloaria.model.enums.StatusPagamento;
 import br.com.leiloaria.service.UsuarioService;
 import br.com.leiloaria.service.exceptions.AtualizarLanceInvalidoException;
 import br.com.leiloaria.service.exceptions.AtualizarLeilaoInvalidoException;
 import br.com.leiloaria.service.exceptions.AtualizarPagamentoVendaException;
-import br.com.leiloaria.service.exceptions.GerarVendaInvalidaException;
 import br.com.leiloaria.service.exceptions.RecursoNaoEncontradoException;
 import br.com.leiloaria.service.interfaces.AuthServiceI;
 import br.com.leiloaria.service.interfaces.AvaliacaoServiceI;
@@ -162,6 +153,10 @@ public class Facade {
     public Usuario buscarUsuarioPorId(Long id) {
         Usuario usuario = userService.buscarPorId(id);
         return usuario;
+    }
+
+    public Usuario buscarUsuarioPorEmail(String email) {
+        return userService.buscarPorEmail(email);
     }
 
     public Page<Usuario> listarTodosUsuarios(Predicate predicate, Pageable pageable) {

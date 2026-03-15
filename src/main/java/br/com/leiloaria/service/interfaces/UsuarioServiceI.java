@@ -12,4 +12,5 @@ public interface UsuarioServiceI {
     Usuario atualizar(Long id, Usuario obj);
     void excluir(Long id);
     Usuario buscarPorId(Long id);
+    Usuario buscarPorEmail(String email);
 }

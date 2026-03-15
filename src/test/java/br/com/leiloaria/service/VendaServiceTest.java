@@ -22,6 +22,7 @@ import br.com.leiloaria.model.Pagamento;
 import br.com.leiloaria.model.PagamentoPix;
 import br.com.leiloaria.model.Venda;
 import br.com.leiloaria.model.enums.StatusPagamento;
+import br.com.leiloaria.repository.LanceRepository;
 import br.com.leiloaria.repository.VendaRepository;
 import br.com.leiloaria.service.exceptions.RecursoNaoEncontradoException;
 
@@ -33,6 +34,9 @@ class VendaServiceTest {
 
     @Mock
     private VendaRepository repository;
+
+    @Mock
+    private LanceRepository lanceRepository;
 
     private Lance lance;
     private Pagamento pagamento;
@@ -49,18 +53,16 @@ class VendaServiceTest {
 
 
     @Test
-    void deveGerarVendaComLanceEPagamento() {
-        when(repository.save(any(Venda.class)))
+    void deveGerarVendaComLanceVencedor() {
+        when(lanceRepository.save(any(Lance.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Venda venda = service.gerarVenda(lance, pagamento);
+        service.gerarVenda(lance);
 
-        assertNotNull(venda);
-        assertEquals(BigDecimal.valueOf(500), venda.getValor());
-        assertEquals(lance, venda.getLance());
-        assertEquals(pagamento, venda.getMetodoPagamento());
-
-        verify(repository).save(any(Venda.class));
+        assertNotNull(lance.getVenda());
+        assertEquals(BigDecimal.valueOf(500), lance.getVenda().getValor());
+        assertEquals(lance, lance.getVenda().getLance());
+        verify(lanceRepository).save(lance);
     }
 
 
