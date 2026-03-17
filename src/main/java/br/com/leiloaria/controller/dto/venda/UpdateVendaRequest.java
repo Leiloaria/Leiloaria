@@ -23,6 +23,6 @@ public class UpdateVendaRequest {
 	private String numeroCartao;
 	private String nomeTitular;
 	private BandeiraCartao bandeira;
-	private int diaVencimento;
-	private int anoVencimento;
+	private Integer diaVencimento;
+	private Integer anoVencimento;
 }
