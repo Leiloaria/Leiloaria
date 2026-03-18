@@ -217,7 +217,7 @@ public class Facade {
     }
 
     public Avaliacao avaliarCompra(Long loteId, AvaliacaoRequest avaliacaoRequest) {
-        
+        Usuario logado = authorizationService.getUsuarioLogado();
         // Verificar se o lote existe
         Lote lote = loteService.buscarLoteById(loteId);
         // Verificar se o leilao já finalizou (pq ai ta aberto a avaliacao)
@@ -231,7 +231,8 @@ public class Facade {
         }
         
         Avaliacao avaliacao = avaliacaoRequest.convertToEntity(avaliacaoRequest, modelMapper);
-
+        avaliacao.setUsuario(logado);
+        avaliacao.setLote(lote);
         return avaliacaoService.avaliarCompra(avaliacao);
     }
 
@@ -388,6 +389,10 @@ public class Facade {
     //list
     public Page<Leilao> listarLeiloes(Predicate filtro, Pageable pageable) {
         return leilaoService.listar(filtro, pageable);
+    }
+
+    public Page<Leilao> listarLeiloesPorParticipanteId(Long participanteId, Pageable pageable) {
+        return leilaoService.listarLeiloesPorParticipanteId(participanteId, pageable);
     }
     
     //list for scheduler

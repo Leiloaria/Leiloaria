@@ -20,18 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.querydsl.core.types.Predicate;
 
-import br.com.leiloaria.controller.dto.lance.LanceRequest;
-import br.com.leiloaria.controller.dto.lance.LanceResponse;
 import br.com.leiloaria.controller.dto.leilao.CancelarLeilaoRequest;
 import br.com.leiloaria.controller.dto.leilao.LeilaoRequest;
 import br.com.leiloaria.controller.dto.leilao.LeilaoResponse;
 import br.com.leiloaria.controller.dto.leilao.UpdateLeilaoRequest;
-import br.com.leiloaria.controller.dto.leilao.UpdateLeilaoStatusRequest;
-import br.com.leiloaria.controller.dto.user.UserResponse;
 import br.com.leiloaria.facade.Facade;
-import br.com.leiloaria.model.Lance;
 import br.com.leiloaria.model.Leilao;
-import br.com.leiloaria.model.Usuario;
 import jakarta.validation.Valid;
 
 @RestController
@@ -53,6 +47,15 @@ public class LeilaoController {
             @SortDefault(sort = "id", direction = Sort.Direction.ASC)
             Pageable pageable) {
     	return facade.listarLeiloes(predicate, pageable).map(leilao -> new LeilaoResponse(leilao));
+    }
+
+	@GetMapping("/participante/{id}")
+    public Page<LeilaoResponse> listarLeiloesPorParticipanteId( @PathVariable("id") Long participanteId,
+			@PageableDefault(value = 10)
+			@SortDefault(sort = "id", direction = Sort.Direction.ASC)
+			Pageable pageable) {
+				System.out.println("Listando leilões para participante ID: " + participanteId);
+    	return facade.listarLeiloesPorParticipanteId(participanteId, pageable).map(leilao -> new LeilaoResponse(leilao));
     }
     
 	@GetMapping("/{id}")
