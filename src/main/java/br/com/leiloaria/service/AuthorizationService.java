@@ -3,6 +3,7 @@ package br.com.leiloaria.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import br.com.leiloaria.model.Avaliacao;
@@ -19,17 +20,31 @@ public class AuthorizationService {
 
   @Autowired
   private LanceServiceI lanceService;
-  
+
   public Usuario getUsuarioLogado() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    Long currentUserId = (Long) authentication.getPrincipal();
 
-    return usuarioService.buscarPorId(currentUserId);
+    if (authentication.getPrincipal() instanceof Jwt jwt) {
+      try {
+        Usuario logado = usuarioService.buscarPorEmail(jwt.getSubject());
+        return logado;
+      } catch (IllegalArgumentException e) {
+        throw new IllegalArgumentException("Erro de autorização");
+      }
+    } else {
+      throw new IllegalArgumentException("Erro de autorização");
+    }
   }
-  
+
   public Boolean isUsuarioAutorizadoParaAvaliacao(Avaliacao avaliacaoExistente) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    Long currentUserId = (Long) authentication.getPrincipal();
+    Long currentUserId = null;
+    if (authentication.getPrincipal() instanceof Jwt jwt) {
+      Usuario logado = usuarioService.buscarPorEmail(jwt.getSubject());
+      if (logado == null)
+        return false;
+      currentUserId = logado.getId();
+    }
 
     boolean isAdmin = isAdmin();
 
@@ -42,18 +57,27 @@ public class AuthorizationService {
 
   public Boolean isUsuarioVencedorDoLote(Long loteId) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    Long currentUserId = (Long) authentication.getPrincipal();
 
-    boolean isAdmin = isAdmin();
+    Long currentUserId = null;
+    if (authentication.getPrincipal() instanceof Jwt jwt) {
+      Usuario logado = usuarioService.buscarPorEmail(jwt.getSubject());
+      if (logado == null)
+        return false;
+      currentUserId = logado.getId();
+    }
 
-    if (isAdmin) return true;
+    if (isAdmin())
+      return true;
+
+    if (currentUserId == null)
+      return false;
 
     Lance maiorLance = lanceService.buscarMaiorLance(loteId);
-    
-    if(maiorLance == null) {
-    	return false;
+
+    if (maiorLance == null) {
+      return false;
     }
-    
+
     return maiorLance.getUsuario().getId().equals(currentUserId);
   }
 
