@@ -6,9 +6,12 @@ import java.util.List;
 import org.hibernate.validator.constraints.br.CPF;
 import org.modelmapper.ModelMapper;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import br.com.leiloaria.model.Usuario;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +33,8 @@ public class UserRequest {
 	@NotBlank(message = "O CPF é obrigatório")
 	@CPF
     private String cpf;
-	@NotBlank(message = "A data de nascimento é obrigatória")
+	@NotNull(message = "A data de nascimento é obrigatória")
+	@JsonFormat(shape = com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dataNascimento;
     private List<String> telefone;
     

@@ -1,7 +1,10 @@
 ARG BASE_IMAGE=amazoncorretto:25-jdk
 
+
 FROM ${BASE_IMAGE} AS build
 WORKDIR /app
+
+RUN yum install -y tar gzip
 
 COPY mvnw ./
 COPY .mvn .mvn
@@ -15,8 +18,11 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.m2 \
     ./mvnw clean package spring-boot:repackage -DskipTests
 
+
 FROM ${BASE_IMAGE} AS runtime
 WORKDIR /app
+
+RUN yum install -y tar gzip
 
 COPY --from=build /app/target/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]

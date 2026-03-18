@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Pageable;
+
+import jakarta.validation.Valid;
 import com.querydsl.core.types.Predicate;
 
 import br.com.leiloaria.controller.dto.lance.LanceResponse;
@@ -52,12 +54,41 @@ public class UserController {
         Usuario usuario = facade.buscarUsuarioPorEmail(email);
         return new ResponseEntity<>(new UserResponse(usuario, modelMapper), HttpStatus.OK);
     }
+
+    @PutMapping("/me")
+    public ResponseEntity<?> atualizarPerfil(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody UserRequest userUpdateRequest) {
+        if (jwt == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String email = jwt.getSubject();
+
+        Usuario usuario = facade.buscarUsuarioPorEmail(email);
+        Usuario userAtualizado = facade.atualizarUsuario(usuario.getId(), userUpdateRequest);
+        
+
+        return new ResponseEntity<>(new UserResponse(userAtualizado, modelMapper), HttpStatus.OK);
+    }
     
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         Usuario usuario = facade.buscarUsuarioPorId(id);
         return new ResponseEntity<>(new UserResponse(usuario, modelMapper), HttpStatus.OK);
+    }
+    
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @Valid @RequestBody UserRequest userUpdateRequest) {
+        Usuario userAtualizado = facade.atualizarUsuario(id, userUpdateRequest);
+        return new ResponseEntity<>(new UserResponse(userAtualizado, modelMapper), HttpStatus.OK);
+    }
+    
+    @PreAuthorize("hasAnyRole('ADMIN')") // TODO: o proprio user pode apagar seu perfil
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletar(@PathVariable Long id) {
+        facade.deletarUsuario(id);
+        return ResponseEntity.noContent().build();
     }
     
     @PreAuthorize("hasAnyRole('ADMIN')")
@@ -80,19 +111,5 @@ public class UserController {
     @GetMapping("/{id}/lances")
     public List<MeusLancesResponse> listarTodosLances(@PathVariable("id") Long idUsuario) {
         return facade.buscarLancesPorUsuario(idUsuario).stream().map(MeusLancesResponse::new).toList();
-    }
-    
-    @PreAuthorize("hasAnyRole('ADMIN')") // TODO: o proprio user pode atualuizar seu perfil
-    @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody UserRequest userUpdateRequest) {
-        Usuario userAtualizado = facade.atualizarUsuario(id, userUpdateRequest);
-        return new ResponseEntity<>(new UserResponse(userAtualizado, modelMapper), HttpStatus.OK);
-    }
-    
-    @PreAuthorize("hasAnyRole('ADMIN')") // TODO: o proprio user pode apagar seu perfil
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletar(@PathVariable Long id) {
-        facade.deletarUsuario(id);
-        return ResponseEntity.noContent().build();
     }
 }
