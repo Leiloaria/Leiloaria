@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -52,6 +53,7 @@ public class UsuarioService implements UsuarioServiceI {
 		return usuarioRepository.save(obj);
 	}
 
+	@Transactional
 	@Override
     public Usuario atualizar(Long id, Usuario obj) {
         if (id == null || id <= 0) throw new IllegalArgumentException("ID inválido");
@@ -65,7 +67,25 @@ public class UsuarioService implements UsuarioServiceI {
              }
         }
 
-        return usuarioRepository.save(usuarioExistente);
+        if (obj.getNome() != null && !obj.getNome().trim().isEmpty()) {
+            usuarioExistente.setNome(obj.getNome());
+        }
+        if (obj.getEmail() != null && !obj.getEmail().trim().isEmpty()) {
+            usuarioExistente.setEmail(obj.getEmail());
+        }
+        if (obj.getCpf() != null && !obj.getCpf().trim().isEmpty()) {
+            usuarioExistente.setCpf(obj.getCpf());
+        }
+        if (obj.getDataNascimento() != null) {
+            usuarioExistente.setDataNascimento(obj.getDataNascimento());
+        }
+        if (obj.getTelefone() != null) {
+            usuarioExistente.setTelefone(obj.getTelefone());
+        }
+
+        Usuario usuarioSalvo = usuarioRepository.save(usuarioExistente);
+
+        return usuarioSalvo;
     }
 
 	@Override
