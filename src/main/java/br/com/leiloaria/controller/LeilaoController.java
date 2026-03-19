@@ -1,5 +1,4 @@
 package br.com.leiloaria.controller;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,14 +31,9 @@ import jakarta.validation.Valid;
 @RequestMapping("/leiloes")
 public class LeilaoController {
 
-    private final ModelMapper modelMapper;
     @Autowired
 	private Facade facade;
 
-    LeilaoController(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
-    
     //ex: /leiloes?status=ATIVO&page=0&size=5
     @GetMapping("")
     public Page<LeilaoResponse> listarLeiloes( @QuerydslPredicate(root = Leilao.class) Predicate predicate,
@@ -50,7 +44,7 @@ public class LeilaoController {
     }
 
 	@GetMapping("/participante/{id}")
-    public Page<LeilaoResponse> listarLeiloesPorParticipanteId( @PathVariable("id") Long participanteId,
+    public Page<LeilaoResponse> listarLeiloesPorParticipanteId(@PathVariable("id") Long participanteId,
 			@PageableDefault(value = 10)
 			@SortDefault(sort = "id", direction = Sort.Direction.ASC)
 			Pageable pageable) {
@@ -70,11 +64,11 @@ public class LeilaoController {
 		Leilao l = facade.cadastrarLeilao(obj, obj.getIdUsuario());
 		return new LeilaoResponse(l);
 	}
-	
-	@PatchMapping("/{id}")
+
+	@PatchMapping("{id}")
 	@ResponseStatus(code = HttpStatus.OK)
-	public LeilaoResponse atualizarCategoria(@PathVariable("id") Long idLeilao, @RequestBody @Valid UpdateLeilaoRequest obj) {
-		Leilao l = facade.atualizarLeilao(idLeilao, obj);
+	public LeilaoResponse atualizarLeilao(@PathVariable("id") Long id, @RequestBody @Valid UpdateLeilaoRequest obj) {
+		Leilao l = facade.atualizarLeilao(id, obj);
 		return new LeilaoResponse(l);
 	}
 	

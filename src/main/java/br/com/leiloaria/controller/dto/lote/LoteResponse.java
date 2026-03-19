@@ -26,6 +26,7 @@ public class LoteResponse {
 	private String descricao;
 	private BigDecimal lanceMinimo;
 	private List<Item> itens;
+    private LeilaoResponse leilao;
 	private List<LanceResponse> lances;
 	
 	public LoteResponse(Lote l) {
@@ -34,7 +35,6 @@ public class LoteResponse {
         this.descricao = l.getDescricao();
         this.lanceMinimo = l.getLanceMinimo();
         this.itens = l.getItens();
-        
         this.lances = new ArrayList<>();
         List<Lance> lances = l.getLances();
         

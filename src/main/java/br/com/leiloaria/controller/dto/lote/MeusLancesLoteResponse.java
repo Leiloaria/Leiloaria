@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.leiloaria.controller.dto.lance.LanceResponse;
+import br.com.leiloaria.controller.dto.leilao.LeilaoResponse;
 import br.com.leiloaria.model.Item;
 import br.com.leiloaria.model.Lance;
 import br.com.leiloaria.model.Lote;

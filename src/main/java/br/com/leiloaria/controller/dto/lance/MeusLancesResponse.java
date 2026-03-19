@@ -3,6 +3,7 @@ package br.com.leiloaria.controller.dto.lance;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import br.com.leiloaria.controller.dto.leilao.LeilaoResponse;
 import br.com.leiloaria.controller.dto.lote.MeusLancesLoteResponse;
 import br.com.leiloaria.controller.dto.venda.VendaResponse;
 import br.com.leiloaria.model.Lance;
@@ -20,13 +21,14 @@ public class MeusLancesResponse {
 	private BigDecimal valor;
 	private MeusLancesLoteResponse lote;
 	private VendaResponse venda;
+    private LeilaoResponse leilao;
     
     public MeusLancesResponse(Lance lance) {
         this.id = lance.getId();
         this.timestamp = lance.getTimestamp();
         this.valor = lance.getValor();
         this.lote = new MeusLancesLoteResponse(lance.getLote());
-        
+        this.leilao = new LeilaoResponse(lance.getLote().getLeilao());
         Venda venda = lance.getVenda();
         
         if(venda != null) {

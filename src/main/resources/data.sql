@@ -157,16 +157,16 @@ INSERT INTO lance (timestamp, valor, lote_id, usuario_id) VALUES
 -- ======================
 
 -- Pagamento cartão para venda do sofá
-INSERT INTO pagamento (id, status, dtype, numero_cartao, nome_titular, bandeira, dia_vencimento, ano_vencimento)
-VALUES (1, 1, 'PagamentoCartaoCredito', '4111111111111111', 'João Silva', 1, 12, 2028);
+INSERT INTO pagamento (status, dtype, numero_cartao, nome_titular, bandeira, dia_vencimento, ano_vencimento)
+VALUES (1, 'PagamentoCartaoCredito', '4111111111111111', 'João Silva', 1, 12, 2028);
 
 -- ======================
 -- VENDAS
 -- ======================
 
 -- Venda do Sofá (leilão 5)
-INSERT INTO venda (id, valor, metodo_pagamento_id, created_at, updated_at)
-VALUES (1, 1201.00, 1, NOW(), NOW());
+INSERT INTO venda (valor, metodo_pagamento_id, created_at, updated_at)
+VALUES (1201.00, 1, NOW(), NOW());
 
 -- ======================
 -- ATUALIZAÇÃO DOS LANCES COM VENDA

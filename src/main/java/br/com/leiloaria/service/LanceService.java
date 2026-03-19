@@ -11,10 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.types.Predicate;
 
-import br.com.leiloaria.model.Categoria;
 import br.com.leiloaria.model.Lance;
-import br.com.leiloaria.model.Leilao;
-import br.com.leiloaria.model.Lote;
 import br.com.leiloaria.repository.LanceRepository;
 import br.com.leiloaria.repository.UsuarioRepository;
 import br.com.leiloaria.service.exceptions.AtualizarLanceInvalidoException;

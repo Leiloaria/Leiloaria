@@ -63,7 +63,7 @@ public class UserController {
         Usuario userAtualizado = facade.atualizarUsuario(usuario.getId(), userUpdateRequest);
         
 
-        return new ResponseEntity<>(new UserResponse(userAtualizado, modelMapper), HttpStatus.OK);
+        return new ResponseEntity<>(new UserResponse(userAtualizado), HttpStatus.OK);
     }
     
     @PreAuthorize("hasAnyRole('ADMIN')")
@@ -71,20 +71,6 @@ public class UserController {
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         Usuario usuario = facade.buscarUsuarioPorId(id);
         return new ResponseEntity<>(new UserResponse(usuario), HttpStatus.OK);
-    }
-    
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @Valid @RequestBody UserRequest userUpdateRequest) {
-        Usuario userAtualizado = facade.atualizarUsuario(id, userUpdateRequest);
-        return new ResponseEntity<>(new UserResponse(userAtualizado, modelMapper), HttpStatus.OK);
-    }
-    
-    @PreAuthorize("hasAnyRole('ADMIN')") // TODO: o proprio user pode apagar seu perfil
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletar(@PathVariable Long id) {
-        facade.deletarUsuario(id);
-        return ResponseEntity.noContent().build();
     }
     
     @PreAuthorize("hasAnyRole('ADMIN')")
