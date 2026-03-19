@@ -19,6 +19,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import br.com.leiloaria.controller.dto.items.ItemRequest;
 import br.com.leiloaria.controller.dto.leilao.LeilaoRequest;
@@ -198,5 +202,47 @@ class LeilaoServiceTest {
         assertThrows(ExcluirLeilaoJaIniciadoException.class,
                 () -> service.excluir(1L));
     }
+
+    @Test
+    @DisplayName("Deve listar leilões onde o usuário fez lance")
+    void deveListarLeiloesPorParticipanteId() {
+        Long participanteId = 1L;
+        Usuario usuario = new Usuario();
+        usuario.setId(participanteId);
+        usuario.setNome("João");
+
+        Leilao leilao1 = new Leilao();
+        leilao1.setId(1L);
+        Leilao leilao2 = new Leilao();
+        leilao2.setId(2L);
+        
+        List<Leilao> leiloes = List.of(leilao1, leilao2);
+        Page<Leilao> pageLeiloes = new PageImpl<>(leiloes, PageRequest.of(0, 10), leiloes.size());
+        
+        when(usuarioRepo.findById(participanteId)).thenReturn(Optional.of(usuario));
+        when(repository.findByLoteLancesUsuarioId(participanteId, Pageable.unpaged())).thenReturn(pageLeiloes);
+
+        Page<Leilao> resultado = service.listarLeiloesPorParticipanteId(participanteId, Pageable.unpaged());
+
+        assertNotNull(resultado);
+        assertEquals(2, resultado.getTotalElements());
+        assertEquals(leilao1.getId(), resultado.getContent().get(0).getId());
+        assertEquals(leilao2.getId(), resultado.getContent().get(1).getId());
+        verify(usuarioRepo).findById(participanteId);
+        verify(repository).findByLoteLancesUsuarioId(participanteId, Pageable.unpaged());
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção quando usuário não encontrado ao listar leilões por participante")
+    void deveLancarExcecaoQuandoUsuarioNaoEncontradoAoListarLeiloesPorParticipante() {
+        Long participanteId = 999L;
+        when(usuarioRepo.findById(participanteId)).thenReturn(Optional.empty());
+
+        assertThrows(RecursoNaoEncontradoException.class,
+                () -> service.listarLeiloesPorParticipanteId(participanteId, Pageable.unpaged()));
+        verify(usuarioRepo).findById(participanteId);
+    }
+
+    
 }
 

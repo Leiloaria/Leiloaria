@@ -30,16 +30,16 @@ INSERT INTO endereco (id, rua, logradouro, bairro, cidade, cep, estado) VALUES
 -- USUÁRIOS
 -- ======================
 INSERT INTO usuario (nome, cpf, email, telefone, ativo, senha, data_nascimento, endereco_id, eh_admin) VALUES
-('João Silva', '12345678900', 'joao@email.com', '{11987654321}', true, '$2a$10$hLEKW8jHtPKLvCbDQtKaq.VRc0MZ3c4SYQi2dSHqwMxHVQDCMTN7i', '1990-05-15', 1, FALSE);
+('João Silva', '12345678900', 'joao@email.com', '{11987654321}', true, '$2a$10$dTQfxG0LTOx4Pu2nMriftOAv5qxNgd6CCA7V1LhGglxvVW9dJID.m', '1990-05-15', 1, FALSE);
 
 INSERT INTO usuario (nome, cpf, email, telefone, ativo, senha, data_nascimento, endereco_id, eh_admin) VALUES
-('Maria Santos', '98765432100', 'maria@email.com', '{11912345678}', true, '$2a$10$hLEKW8jHtPKLvCbDQtKaq.VRc0MZ3c4SYQi2dSHqwMxHVQDCMTN7i', '1985-03-20', 2, FALSE);
+('Maria Santos', '98765432100', 'maria@email.com', '{11912345678}', true, '$2a$10$dTQfxG0LTOx4Pu2nMriftOAv5qxNgd6CCA7V1LhGglxvVW9dJID.m', '1985-03-20', 2, FALSE);
 
 INSERT INTO usuario (nome, cpf, email, telefone, ativo, senha, data_nascimento, endereco_id, eh_admin) VALUES
-('Pedro Oliveira', '55555555500', 'pedro@email.com', '{11998765432}', true, '$2a$10$hLEKW8jHtPKLvCbDQtKaq.VRc0MZ3c4SYQi2dSHqwMxHVQDCMTN7i', '1992-07-10', 3, FALSE);
+('Pedro Oliveira', '55555555500', 'pedro@email.com', '{11998765432}', true, '$2a$10$dTQfxG0LTOx4Pu2nMriftOAv5qxNgd6CCA7V1LhGglxvVW9dJID.m', '1992-07-10', 3, FALSE);
 
 INSERT INTO usuario (nome, cpf, email, telefone, ativo, senha, data_nascimento, endereco_id, eh_admin) VALUES
-('Ana Costa', '11111111100', 'ana@email.com', '{11911111111}', true, '$2a$10$hLEKW8jHtPKLvCbDQtKaq.VRc0MZ3c4SYQi2dSHqwMxHVQDCMTN7i', '1988-11-25', 4, TRUE);
+('Ana Costa', '11111111100', 'ana@email.com', '{11911111111}', true, '$2a$10$dTQfxG0LTOx4Pu2nMriftOAv5qxNgd6CCA7V1LhGglxvVW9dJID.m', '1988-11-25', 4, TRUE);
 
 -- ======================
 -- LOTES

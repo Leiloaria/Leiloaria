@@ -10,6 +10,7 @@ import com.querydsl.core.types.Predicate;
 
 import br.com.leiloaria.model.Avaliacao;
 import br.com.leiloaria.repository.AvaliacaoRepository;
+import br.com.leiloaria.service.exceptions.RecursoNaoEncontradoException;
 import br.com.leiloaria.service.interfaces.AvaliacaoServiceI;
 
 @Service
@@ -61,7 +62,7 @@ public class AvaliacaoService implements AvaliacaoServiceI {
   @Override
   public Avaliacao buscarPorId(Long id) {
     return repository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Avaliação não encontrada com ID: " + id));
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Avaliação não encontrada com ID: " + id));
   }
 
   @Override
