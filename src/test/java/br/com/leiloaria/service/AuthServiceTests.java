@@ -64,10 +64,11 @@ public class AuthServiceTests {
   @DisplayName("Deve realizar login com sucesso")
   void testLoginSuccess() {
     Authentication auth = mock(Authentication.class);
+    Usuario usuario = usuarioRepository.findByEmail("ldj@gmail.com").get();
 
-    when(usuarioRepository.findByEmail("ldj@gmail.com")).thenReturn(Optional.of(usuario));
+    when(usuario).thenReturn(usuario);
     when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(auth);
-    when(tokenService.gerarToken(auth)).thenReturn("token123");
+    when(tokenService.gerarToken(auth, usuario.getId())).thenReturn("token123");
 
     LoginResponse response = authService.login(loginRequest);
 
@@ -78,11 +79,12 @@ public class AuthServiceTests {
   @Test
   @DisplayName("Deve registrar usuário com sucesso")
   void testRegisterSuccess() {
+    Usuario usuario = usuarioRepository.findByEmail("ldj@gmail.com").get();
 
     when(usuarioRepository.findByEmail("ldj@gmail.com")).thenReturn(Optional.empty());
     when(passwordEncoder.encode("senha123")).thenReturn("encodedSenha");
     when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuario);
-    when(tokenService.gerarToken(any(Authentication.class))).thenReturn("token123");
+    when(tokenService.gerarToken(any(Authentication.class), 1L)).thenReturn("token123");
 
     RegisterResponse response = authService.register(registerRequest);
 
