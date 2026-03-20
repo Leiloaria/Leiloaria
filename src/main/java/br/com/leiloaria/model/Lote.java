@@ -36,7 +36,7 @@ public class Lote {
 	@JsonIgnore
 	private Leilao leilao;
 	
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "lote_id")
 	private List<Item> itens;
 	

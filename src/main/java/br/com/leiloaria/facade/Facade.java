@@ -450,7 +450,7 @@ public class Facade {
                 try {
                     item = buscarItemPorId(itemReq.getIdItem());
                     item = atualizarItem(item.getId(), itemObj);
-                } catch (RecursoNaoEncontradoException e) {
+                } catch (Exception e) {
                     item = cadastrarItem(itemObj);
                 }
                 itens.add(item);

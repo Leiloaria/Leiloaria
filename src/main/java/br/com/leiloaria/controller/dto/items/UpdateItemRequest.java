@@ -1,12 +1,10 @@
 package br.com.leiloaria.controller.dto.items;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.leiloaria.model.Categoria;
 import br.com.leiloaria.model.Item;
 import br.com.leiloaria.model.enums.Condicao;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -17,7 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateItemRequest {
-    @NotNull
     @Positive
     private Long idItem;
 
