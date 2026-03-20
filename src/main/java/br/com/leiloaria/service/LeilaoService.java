@@ -128,78 +128,35 @@ public class LeilaoService implements LeilaoServiceI {
     }
 
     @Override
-    public Leilao atualizarLeilao(Long id, UpdateLeilaoRequest lReq) {
+    public Leilao atualizarLeilao(Long id, Leilao obj) {
         Leilao leilao = repository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Leilao não encontrado"));
 
-        if (leilao.getStatus() != StatusLeilao.PENDENTE) {
-            throw new AtualizarLeilaoInvalidoException(
-                    "Status já não está mais pendente e não pode ser mais atualizado");
-        }
-
-        if (lReq.getInicio() != null) {
-            leilao.setInicio(lReq.getInicio());
-        }
-
-        if (lReq.getFim() != null) {
-            leilao.setFim(lReq.getFim());
-        }
-
-        if (lReq.getPrazoPagamento() != null) {
-            leilao.setPrazoPagamento(lReq.getPrazoPagamento());
-        }
-
-        Lote loteLeilao = leilao.getLote();
-
-        if (lReq.getNome() != null) {
-            loteLeilao.setNome(lReq.getNome());
-        }
-
-        if (lReq.getDescricao() != null) {
-            loteLeilao.setDescricao(lReq.getDescricao());
-        }
-
-        if (lReq.getLanceMinimo() != null) {
-            loteLeilao.setLanceMinimo(lReq.getLanceMinimo());
-        }
-
-        if (lReq.getItens() != null && lReq.getItens().size() > 0) {
-            for (UpdateItemRequest itemReq : lReq.getItens()) {
-                Item item = itemRepo.findById(itemReq.getIdItem())
-                        .orElseThrow(() -> new RecursoNaoEncontradoException("Item não encontrado"));
-
-                if (itemReq.getNome() != null) {
-                    item.setNome(itemReq.getNome());
-                }
-
-                if (itemReq.getDescricao() != null) {
-                    item.setDescricao(itemReq.getDescricao());
-                }
-
-                if (itemReq.getImagens() != null) {
-                    item.setImagens(itemReq.getImagens());
-                }
-
-                if (itemReq.getCondicao() != null) {
-                    item.setCondicao(itemReq.getCondicao());
-                }
-
-                if (itemReq.getCategoriasId() != null && itemReq.getCategoriasId().size() > 0) {
-                    List<Categoria> itemCategorias = new ArrayList<Categoria>();
-
-                    // pode ser otimizado para Batch, mas para fins didáticos vai por n+1
-                    for (Long categoriaId : itemReq.getCategoriasId()) {
-                        Categoria categoria = categoriaRepo.findById(categoriaId)
-                                .orElseThrow(() -> new RecursoNaoEncontradoException("Categoria não encontrada"));
-                        itemCategorias.add(categoria);
-                    }
-
-                    item.setCategorias(itemCategorias);
-                }
-            }
-        }
+        atualizarDados(leilao, obj);
 
         return repository.save(leilao);
+    }
+
+    private void atualizarDados(Leilao leilao, Leilao obj) {
+        if (obj.getStatus() != null){
+            if (leilao.getStatus() != StatusLeilao.PENDENTE) {
+                throw new AtualizarLeilaoInvalidoException(
+                        "Status já não está mais pendente e não pode ser mais atualizado");
+            } else
+                leilao.setStatus(obj.getStatus());
+        }
+
+        if (obj.getInicio() != null) {
+            leilao.setInicio(obj.getInicio());
+        }
+
+        if (obj.getFim() != null) {
+            leilao.setFim(obj.getFim());
+        }
+
+        if (obj.getPrazoPagamento() != null) {
+            leilao.setPrazoPagamento(obj.getPrazoPagamento());
+        }
     }
 
     @Override

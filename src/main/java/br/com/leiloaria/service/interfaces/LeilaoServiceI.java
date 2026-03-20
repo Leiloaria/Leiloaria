@@ -33,7 +33,7 @@ public interface LeilaoServiceI {
 
 	Leilao cadastrar(LeilaoRequest lReq, Usuario u);
 
-	Leilao atualizarLeilao(Long id, UpdateLeilaoRequest lReq);
+	Leilao atualizarLeilao(Long id, Leilao obj);
 
 	void atualizarStatusLeilao(Long leilaoId, StatusLeilao novoStatus);
 }
