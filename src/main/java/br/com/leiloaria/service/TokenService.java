@@ -19,7 +19,7 @@ public class TokenService {
         this.jwtEncoder = jwtEncoder;
     }
 
-    public String gerarToken(Authentication authentication) {
+    public String gerarToken(Authentication authentication, Long userId) {
         Instant now = Instant.now();
         long expiry = 36000L;
 
@@ -33,6 +33,7 @@ public class TokenService {
                 .expiresAt(now.plusSeconds(expiry))
                 .subject(authentication.getName())
                 .claim("scope", scope)
+                .claim("userId", userId)
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
