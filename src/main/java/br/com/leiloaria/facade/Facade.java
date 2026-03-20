@@ -475,7 +475,7 @@ public class Facade {
     	Usuario usuario = usuarioService.buscarPorId(usuarioId);
     	Leilao leilao = leilaoService.buscarPorId(leilaoId);
     	
-    	if(usuario.getId() != leilao.getProprietario().getId() || !usuario.getEhAdmin()) {
+    	if(!usuario.getEhAdmin() && usuario.getId() != leilao.getProprietario().getId()) {
     		throw new AtualizarLeilaoInvalidoException("Leilão não pode ser cancelado por esse usuário");
     	}
     	

@@ -42,7 +42,7 @@ public class AuthService implements AuthServiceI {
 
             Authentication auth = authenticationManager.authenticate(usernamePassword);
 
-            String token = tokenService.gerarToken(auth);
+            String token = tokenService.gerarToken(auth, u.getId());
 
             return new LoginResponse(token);
 
@@ -65,11 +65,11 @@ public class AuthService implements AuthServiceI {
         novoUsuario.setSenha(passwordEncoder.encode(registerRequest.getPassword()));
         novoUsuario.setAtivo(true);
 
-        usuarioRepository.save(novoUsuario);
+        Usuario usuarioSalvo = usuarioRepository.save(novoUsuario);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 novoUsuario.getEmail(), registerRequest.getPassword(), novoUsuario.getAuthorities());
-        String token = tokenService.gerarToken(authentication);
+        String token = tokenService.gerarToken(authentication, usuarioSalvo.getId());
 
         return new RegisterResponse("Usuário registrado com sucesso", token);
     }
