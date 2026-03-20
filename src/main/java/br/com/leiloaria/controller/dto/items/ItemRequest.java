@@ -2,7 +2,6 @@ package br.com.leiloaria.controller.dto.items;
 
 import java.util.List;
 
-import br.com.leiloaria.model.Categoria;
 import br.com.leiloaria.model.enums.Condicao;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;

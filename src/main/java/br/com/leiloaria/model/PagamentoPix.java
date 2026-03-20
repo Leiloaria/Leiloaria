@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 public class PagamentoPix extends Pagamento{
-	private String urlPagamento;
+	private String chavePix;
 }

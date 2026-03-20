@@ -3,7 +3,8 @@ package br.com.leiloaria.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.leiloaria.controller.dto.venda.VendaRequest;
+import br.com.leiloaria.controller.dto.venda.CreateVendaRequest;
+import br.com.leiloaria.controller.dto.venda.UpdateVendaRequest;
 import br.com.leiloaria.model.Pagamento;
 import br.com.leiloaria.model.PagamentoCartaoCredito;
 import br.com.leiloaria.model.PagamentoPix;
@@ -13,20 +14,13 @@ import br.com.leiloaria.repository.LanceRepository;
 import br.com.leiloaria.repository.PagamentoRepository;
 import br.com.leiloaria.service.exceptions.FormaPagamentoInvalidaException;
 import br.com.leiloaria.service.interfaces.PagamentoServiceI;
+import java.util.UUID;
 
 @Service
 public class PagamentoService implements PagamentoServiceI {
-
-    private final LanceRepository lanceRepository;
-    @Autowired
-    private PagamentoRepository repository;
-
-    PagamentoService(LanceRepository lanceRepository) {
-        this.lanceRepository = lanceRepository;
-    }
     
     @Override
-	public Pagamento gerarFormaPagamento(VendaRequest venda) {
+	public Pagamento gerarFormaPagamento(UpdateVendaRequest venda) {
     	Pagamento pagamento = null;
     	
     	switch(venda.getFormaPagamento()) {
@@ -44,7 +38,7 @@ public class PagamentoService implements PagamentoServiceI {
     		case FormaPagamento.PIX:
     			PagamentoPix pagamentoPix = new PagamentoPix();
     			pagamentoPix.setStatus(StatusPagamento.PENDING);
-    			pagamentoPix.setUrlPagamento(venda.getUrlPagamento());
+    			pagamentoPix.setChavePix(""+UUID.randomUUID()+UUID.randomUUID()+UUID.randomUUID()+UUID.randomUUID());
     			
     			pagamento = pagamentoPix;
     			break;
@@ -52,6 +46,6 @@ public class PagamentoService implements PagamentoServiceI {
     			throw new FormaPagamentoInvalidaException("Forma de Pagamento não é aceita");
     	}
     	
-    	return repository.save(pagamento);
+    	return pagamento;
     }
 }

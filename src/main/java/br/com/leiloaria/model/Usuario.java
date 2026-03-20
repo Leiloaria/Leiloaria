@@ -3,13 +3,16 @@ package br.com.leiloaria.model;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -40,15 +43,23 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String senha;
     private LocalDate dataNascimento;
+    private Boolean ehAdmin = false;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Endereco endereco;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Leilao> leiloes;
+    
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Lance> lances;
+    
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+    	if(ehAdmin) {
+    		return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    	}
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 

@@ -12,8 +12,9 @@ import br.com.leiloaria.model.enums.StatusPagamento;
 
 public interface VendaServiceI {
 
-	Venda gerarVenda(Lance lanceVencedor, Pagamento pagamento);
+	void gerarVenda(Lance lanceVencedor);
 	Venda buscarPorId(Long id);
 	Page<Venda> listar(Predicate filtro, Pageable pageable);
+	Venda adicionarPagamentoVenda(Venda venda, Pagamento pagamento);
 	Venda atualizarStatusPagamentoVenda(Long vendaId, StatusPagamento novoStatus);
 }

@@ -4,13 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import br.com.leiloaria.controller.dto.items.ItemRequest;
 import br.com.leiloaria.controller.dto.items.UpdateItemRequest;
-import br.com.leiloaria.model.enums.StatusLeilao;
+import br.com.leiloaria.model.Leilao;
+import br.com.leiloaria.model.Lote;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -36,4 +33,23 @@ public class UpdateLeilaoRequest {
     
     @Valid
     private List<UpdateItemRequest> itens;
+
+	public Leilao toModel() {
+		Leilao leilao = new Leilao();
+		leilao.setFim(fim);
+		leilao.setInicio(inicio);
+		leilao.setPrazoPagamento(prazoPagamento);
+		Lote lote = new Lote();
+		lote.setDescricao(descricao);
+		lote.setNome(nome);
+		lote.setLanceMinimo(lanceMinimo);
+		leilao.setLote(lote);
+		if (itens != null) {
+			lote.setItens(
+				itens.stream().map((x) -> x.toModel()).toList()
+			);
+		}
+		return leilao;
+	} 
+	
 }

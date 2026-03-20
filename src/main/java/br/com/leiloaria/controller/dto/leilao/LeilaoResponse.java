@@ -1,11 +1,9 @@
 package br.com.leiloaria.controller.dto.leilao;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
-import br.com.leiloaria.controller.dto.categoria.CategoriaResponse;
+import br.com.leiloaria.controller.dto.lote.LoteResponse;
+import br.com.leiloaria.controller.dto.user.UserResponse;
 import br.com.leiloaria.model.Leilao;
-import br.com.leiloaria.model.Lote;
 import br.com.leiloaria.model.enums.StatusLeilao;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,14 +19,17 @@ public class LeilaoResponse {
 	private LocalDateTime fim;
 	private LocalDateTime prazoPagamento;
 	
-	private Lote lote;
+	private LoteResponse lote;
 	
+    private UserResponse proprietario;
+
     public LeilaoResponse(Leilao l) {
         this.id = l.getId();
         this.status = l.getStatus();
         this.inicio = l.getInicio();
         this.fim = l.getFim();
         this.prazoPagamento = l.getPrazoPagamento();
-        this.lote = l.getLote();
+        this.lote = new LoteResponse(l.getLote());
+        this.proprietario = new UserResponse(l.getProprietario());
     }
 }

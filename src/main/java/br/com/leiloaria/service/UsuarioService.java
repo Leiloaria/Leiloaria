@@ -1,10 +1,10 @@
 package br.com.leiloaria.service;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -16,9 +16,6 @@ import br.com.leiloaria.service.interfaces.UsuarioServiceI;
 
 @Service
 public class UsuarioService implements UsuarioServiceI {
-
-	@Autowired
-	private ModelMapper modelMapper;
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
@@ -56,6 +53,7 @@ public class UsuarioService implements UsuarioServiceI {
 		return usuarioRepository.save(obj);
 	}
 
+	@Transactional
 	@Override
     public Usuario atualizar(Long id, Usuario obj) {
         if (id == null || id <= 0) throw new IllegalArgumentException("ID inválido");
@@ -69,10 +67,25 @@ public class UsuarioService implements UsuarioServiceI {
              }
         }
 
-        modelMapper.getConfiguration().setSkipNullEnabled(true);
-        modelMapper.map(obj, usuarioExistente);
+        if (obj.getNome() != null && !obj.getNome().trim().isEmpty()) {
+            usuarioExistente.setNome(obj.getNome());
+        }
+        if (obj.getEmail() != null && !obj.getEmail().trim().isEmpty()) {
+            usuarioExistente.setEmail(obj.getEmail());
+        }
+        if (obj.getCpf() != null && !obj.getCpf().trim().isEmpty()) {
+            usuarioExistente.setCpf(obj.getCpf());
+        }
+        if (obj.getDataNascimento() != null) {
+            usuarioExistente.setDataNascimento(obj.getDataNascimento());
+        }
+        if (obj.getTelefone() != null) {
+            usuarioExistente.setTelefone(obj.getTelefone());
+        }
 
-        return usuarioRepository.save(usuarioExistente);
+        Usuario usuarioSalvo = usuarioRepository.save(usuarioExistente);
+
+        return usuarioSalvo;
     }
 
 	@Override
@@ -88,5 +101,15 @@ public class UsuarioService implements UsuarioServiceI {
 	public Usuario buscarPorId(Long id) {
 
 		return usuarioRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+	}
+
+	@Override
+	public Usuario buscarPorEmail(String email) {
+		if (email == null || email.trim().isEmpty()) {
+			throw new IllegalArgumentException("Email é obrigatório");
+		}
+
+		return usuarioRepository.findByEmail(email)
+				.orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com este e-mail."));
 	}
 }

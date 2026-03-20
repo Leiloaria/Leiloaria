@@ -16,6 +16,8 @@ public interface LanceServiceI {
 	Page<Lance> listar(Predicate filtro, Pageable pageable);
 
 	Lance buscarPorId(Long id);
+	
+	public List<Lance> buscarLancesPorUsuario(Long usuarioId);
 
 	Lance cadastrar(Lance obj);
 	

@@ -19,6 +19,7 @@ import com.querydsl.core.types.Predicate;
 
 import br.com.leiloaria.controller.dto.categoria.CategoriaRequest;
 import br.com.leiloaria.controller.dto.categoria.CategoriaResponse;
+import br.com.leiloaria.controller.dto.categoria.RemoverCategoriaRequest;
 import br.com.leiloaria.facade.Facade;
 import br.com.leiloaria.model.Categoria;
 import jakarta.validation.Valid;
@@ -34,7 +35,7 @@ public class CategoriaController {
 	public CategoriaResponse criarCategoria(@RequestBody 
 											  @Valid CategoriaRequest obj) {
 		Categoria c = obj.toModel();
-		c = facade.cadastrarCategoria(c);
+		c = facade.cadastrarCategoria(obj.getUserId(),c);
 		return new CategoriaResponse(c);
 	}
 	
@@ -55,7 +56,7 @@ public class CategoriaController {
     public CategoriaResponse atualizarCategoria(@PathVariable("id") Long id,
                                                @RequestBody @Valid CategoriaRequest obj) {
         Categoria c = obj.toModel();
-        c = facade.atualizarCategoria(id, c);
+        c = facade.atualizarCategoria(obj.getUserId(), id, c);
         return new CategoriaResponse(c);
     }
 
@@ -69,8 +70,8 @@ public class CategoriaController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void excluirCategoria(@PathVariable("id") Long id) {
-        facade.excluirCategoria(id);
+    public void excluirCategoria(@PathVariable("id") Long id, @RequestBody @Valid RemoverCategoriaRequest obj) {
+        facade.excluirCategoria(obj.getUserId(), id);
     }
 
 }

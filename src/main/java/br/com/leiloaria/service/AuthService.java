@@ -42,7 +42,7 @@ public class AuthService implements AuthServiceI {
 
             Authentication auth = authenticationManager.authenticate(usernamePassword);
 
-            String token = tokenService.gerarToken(auth);
+            String token = tokenService.gerarToken(auth, u.getId());
 
             return new LoginResponse(token);
 
@@ -59,34 +59,18 @@ public class AuthService implements AuthServiceI {
             throw new IllegalArgumentException("Email já cadastrado");
         }
 
-        if (!isValidEmail(registerRequest.getEmail())) {
-            throw new IllegalArgumentException("Email inválido");
-        }
-
-        if (registerRequest.getPassword() == null || registerRequest.getPassword().length() < 6) {
-            throw new IllegalArgumentException("Senha deve ter pelo menos 6 caracteres");
-        }
-
-        if (registerRequest.getUsername() == null || registerRequest.getUsername().trim().isEmpty()) {
-            throw new IllegalArgumentException("Username não pode estar vazio");
-        }
-
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNome(registerRequest.getUsername());
         novoUsuario.setEmail(registerRequest.getEmail());
         novoUsuario.setSenha(passwordEncoder.encode(registerRequest.getPassword()));
         novoUsuario.setAtivo(true);
 
-        usuarioRepository.save(novoUsuario);
+        Usuario usuarioSalvo = usuarioRepository.save(novoUsuario);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 novoUsuario.getEmail(), registerRequest.getPassword(), novoUsuario.getAuthorities());
-        String token = tokenService.gerarToken(authentication);
+        String token = tokenService.gerarToken(authentication, usuarioSalvo.getId());
 
         return new RegisterResponse("Usuário registrado com sucesso", token);
-    }
-
-    private boolean isValidEmail(String email) {
-        return email != null && email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
     }
 }

@@ -33,6 +33,7 @@ public class Leilao {
 	private Usuario proprietario;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name= "lote_id", referencedColumnName="id")
 	private Lote lote;
 	
 	public boolean estaAberto() {

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import br.com.leiloaria.model.Lance;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -14,15 +15,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LanceRequest {
-    @NotBlank
+    @NotNull
     @Positive
     private BigDecimal valor;
     
-    @NotBlank
+    @NotNull
     @Positive
     private Long loteId;
     
-    @NotBlank
+    @NotNull
     @Positive
     private Long usuarioId;
 }
