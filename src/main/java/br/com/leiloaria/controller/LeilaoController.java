@@ -65,9 +65,9 @@ public class LeilaoController {
 		return new LeilaoResponse(l);
 	}
 
-	@PatchMapping("{id}")
+	@PatchMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
-	public LeilaoResponse atualizarLeilao(@PathVariable("id") Long id, @RequestBody @Valid UpdateLeilaoRequest obj) {
+	public LeilaoResponse atualizarLeilao(@PathVariable Long id, @RequestBody @Valid UpdateLeilaoRequest obj) {
 		Leilao l = facade.atualizarLeilao(id, obj);
 		return new LeilaoResponse(l);
 	}

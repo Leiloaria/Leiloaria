@@ -147,15 +147,17 @@ class LeilaoServiceTest {
 
     @Test
     void deveAtualizarLeilaoQuandoPendente() {
-        UpdateLeilaoRequest req = new UpdateLeilaoRequest();
-        req.setNome("Novo nome");
+        Leilao l = new Leilao();
+        LocalDateTime now = LocalDateTime.now();
+        l.setFim(now);
+        
 
         when(repository.findById(1L)).thenReturn(Optional.of(leilao));
         when(repository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Leilao atualizado = service.atualizarLeilao(1L, req);
+        Leilao atualizado = service.atualizarLeilao(1L, l);
 
-        assertEquals("Novo nome", atualizado.getLote().getNome());
+        assertEquals(now, atualizado.getFim());
     }
 
     @Test
@@ -164,7 +166,7 @@ class LeilaoServiceTest {
         when(repository.findById(1L)).thenReturn(Optional.of(leilao));
 
         assertThrows(AtualizarLeilaoInvalidoException.class,
-                () -> service.atualizarLeilao(1L, new UpdateLeilaoRequest()));
+                () -> service.atualizarLeilao(1L, new Leilao()));
     }
 
     @Test

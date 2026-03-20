@@ -2,13 +2,8 @@ package br.com.leiloaria.controller.dto.lance;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
-import br.com.leiloaria.controller.dto.categoria.CategoriaResponse;
-import br.com.leiloaria.model.Categoria;
 import br.com.leiloaria.model.Lance;
-import br.com.leiloaria.model.Lote;
-import br.com.leiloaria.model.Usuario;
 import br.com.leiloaria.model.Venda;
 import lombok.AllArgsConstructor;
 import lombok.Data;

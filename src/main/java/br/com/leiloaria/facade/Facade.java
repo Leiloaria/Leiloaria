@@ -1,7 +1,9 @@
 package br.com.leiloaria.facade;
 
+import br.com.leiloaria.service.ItemService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -19,6 +21,7 @@ import br.com.leiloaria.controller.dto.auth.LoginResponse;
 import br.com.leiloaria.controller.dto.auth.RegisterRequest;
 import br.com.leiloaria.controller.dto.auth.RegisterResponse;
 import br.com.leiloaria.controller.dto.avaliacao.AvaliacaoRequest;
+import br.com.leiloaria.controller.dto.items.UpdateItemRequest;
 import br.com.leiloaria.controller.dto.user.UserRequest;
 import br.com.leiloaria.model.Avaliacao;
 import br.com.leiloaria.controller.dto.lance.LanceRequest;
@@ -26,6 +29,7 @@ import br.com.leiloaria.controller.dto.leilao.LeilaoRequest;
 import br.com.leiloaria.controller.dto.leilao.UpdateLeilaoRequest;
 import br.com.leiloaria.controller.dto.venda.UpdateVendaRequest;
 import br.com.leiloaria.model.Categoria;
+import br.com.leiloaria.model.Item;
 import br.com.leiloaria.model.Lance;
 import br.com.leiloaria.model.Leilao;
 import br.com.leiloaria.model.Lote;
@@ -52,6 +56,8 @@ import br.com.leiloaria.service.interfaces.VendaServiceI;
 
 @Service
 public class Facade {
+
+    private final ItemService itemService;
 
     private final UsuarioService usuarioService;
 
@@ -92,8 +98,9 @@ public class Facade {
     private String paymentGatewayToken;
 
 
-    Facade(UsuarioService usuarioService) {
+    Facade(UsuarioService usuarioService, ItemService itemService) {
         this.usuarioService = usuarioService;
+        this.itemService = itemService;
     }
 
 
@@ -427,7 +434,35 @@ public class Facade {
     
     //update
     public Leilao atualizarLeilao(Long leilaoId, UpdateLeilaoRequest lReq) {
-    	return leilaoService.atualizarLeilao(leilaoId, lReq);
+    	Leilao leilao = buscarLeilaoPorId(leilaoId);
+        Leilao obj = lReq.toModel();
+        
+        Lote lote = leilao.getLote();
+        Lote loteObj = obj.getLote();
+
+        List<Item> itens = new ArrayList<>();
+
+        if (lReq.getItens() != null && lReq.getItens().size() > 0) {
+            for (UpdateItemRequest itemReq : lReq.getItens()) {
+                Item item;
+                Item itemObj = itemReq.toModel();
+                itemObj.getCategorias().forEach((x) -> buscarCategoriaPorId(x.getId()));
+                try {
+                    item = buscarItemPorId(itemReq.getIdItem());
+                    item = atualizarItem(item.getId(), itemObj);
+                } catch (RecursoNaoEncontradoException e) {
+                    item = cadastrarItem(itemObj);
+                }
+                itens.add(item);
+            }
+        }
+
+        loteObj.setItens(itens);
+        leilao.setLote(
+            atualizarLote(lote.getId(), loteObj)
+        );
+        
+        return leilaoService.atualizarLeilao(leilaoId, obj);
     }
     
     //update status
@@ -460,5 +495,28 @@ public class Facade {
     	}
     	
     	vendaService.gerarVenda(maiorLance);
+    }
+
+    //ITEM
+    public Item cadastrarItem(Item obj) {
+        return itemService.cadastrar(obj);
+    }
+
+    public Item buscarItemPorId(Long id) {
+        return itemService.buscarPorId(id);
+    }
+
+    public Item atualizarItem(Long id, Item obj) {
+        return itemService.atualizar(id, obj);
+    }
+
+    //LOTE
+    public Lote buscarLotePorId(Long id) {
+        return loteService.buscarLoteById(id);
+    }
+
+    //ITEM
+    public Lote atualizarLote(Long id, Lote obj) {
+        return loteService.atualizarLote(id, obj);
     }
 }
